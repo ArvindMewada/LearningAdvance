@@ -117,7 +117,7 @@ class _SignUpScreenParentState extends State<SignUpScreenParent> {
                               } else {
                                 dynamic data =
                                     await compute(jsonDecode, value.body);
-                                if (data['flag'] != 2) {
+                                if (data['flag'] != 1) {
                                   SVProgressHUD.dismiss();
                                   showCustomSnackBar(
                                       context, 'Error connecting to server');
@@ -548,6 +548,7 @@ class _SignUpScreenParentState extends State<SignUpScreenParent> {
                                       }
                                       //user don't exist make new user by navigating to registerScreen()
                                       else {
+                                        SVProgressHUD.dismiss();
                                         Navigator.pushReplacement(
                                           context,
                                           MaterialPageRoute(

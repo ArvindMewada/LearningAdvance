@@ -46,7 +46,7 @@ class StudentData {
 
   StudentData.fromJson(Map<String, dynamic> json) {
     userImagePath = json['user_image_path'];
-    userId = json['user_id'];
+    userId = json['user_id'].toString();
     userHash = json['user_hash'];
     userFirstName = json['user_first_name'];
     userLastName = json['user_last_name'];

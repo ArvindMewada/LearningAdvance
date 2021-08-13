@@ -21,6 +21,7 @@ import 'package:elearning/modules/CurrentAffairsPage.dart';
 import 'package:elearning/schemas/clientDataSchema.dart';
 import 'package:elearning/utils/const.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:reorderables/reorderables.dart';
@@ -396,7 +397,17 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                   ),
                   ListTile(
                     shape: listTileShape,
-                    onTap: () {},
+                    onTap: () {
+                      Fluttertoast.showToast(
+                          msg: "About us on click..",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.grey,
+                          textColor: Colors.white,
+                          fontSize: 16.0
+                      );
+                    },
                     leading: Icon(Icons.rate_review),
                     title: Text('Rate the App'),
                   ),
@@ -405,7 +416,16 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                   ),
                   ListTile(
                     shape: listTileShape,
-                    onTap: () {},
+                    onTap: () {
+                      Fluttertoast.showToast(
+                          msg: "Setting on click..",
+                          toastLength: Toast.LENGTH_SHORT,
+                          gravity: ToastGravity.BOTTOM,
+                          timeInSecForIosWeb: 1,
+                          backgroundColor: Colors.grey,
+                          textColor: Colors.white,
+                          fontSize: 16.0);
+                    },
                     leading: Icon(Icons.settings),
                     title: Text('Settings'),
                   ),
