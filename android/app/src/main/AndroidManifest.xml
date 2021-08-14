@@ -27,6 +27,16 @@
             <category android:name="android.intent.category.DEFAULT" />
             <category android:name="android.intent.category.BROWSABLE" />
             <data android:scheme="@string/fb_login_protocol_scheme" />
+              <!-- If your app opens https URLs -->
+              <action android:name="android.intent.action.VIEW" />
+              <data android:scheme="https" />
+              <!-- If your app makes calls -->
+              <action android:name="android.intent.action.DIAL" />
+                  <data android:scheme="tel" />
+              <!-- If your app emails -->
+              <action android:name="android.intent.action.SEND" />
+              <data android:mimeType="*/*" />
+
           </intent-filter>
         </activity>
 

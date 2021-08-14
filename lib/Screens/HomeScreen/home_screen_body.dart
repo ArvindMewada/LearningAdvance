@@ -26,6 +26,7 @@ import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:reorderables/reorderables.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:store_redirect/store_redirect.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class HomeScreenBody extends StatefulWidget {
@@ -343,6 +344,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
       ],
     );
 
+
     return Scaffold(
       key: _scaffoldKey,
       drawer: Drawer(
@@ -398,15 +400,9 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                   ListTile(
                     shape: listTileShape,
                     onTap: () {
-                      Fluttertoast.showToast(
-                          msg: "About us on click..",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.grey,
-                          textColor: Colors.white,
-                          fontSize: 16.0
-                      );
+                      StoreRedirect.redirect(
+                          androidAppId: "https://play.google.com/store/apps/details?id=com.whatsapp",
+                          iOSAppId: "585027354");
                     },
                     leading: Icon(Icons.rate_review),
                     title: Text('Rate the App'),

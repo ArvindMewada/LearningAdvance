@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:elearning/schemas/gallerySchema.dart';
 import 'package:flutter_staggered_grid_view/flutter_staggered_grid_view.dart';
 import 'package:elearning/MyStore.dart';
@@ -8,6 +9,7 @@ import 'package:elearning/utils/LoadHTMLData.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class AboutUsPage extends StatefulWidget {
@@ -77,6 +79,13 @@ class _AboutUsPageState extends State<AboutUsPage>
     _scrollController.dispose();
     super.dispose();
   }
+
+
+  final Uri emailLaunchUri = Uri(
+    scheme: 'mailto',
+    path: 'smith@example.com',
+  );
+
 
   @override
   Widget build(BuildContext context) {
@@ -166,7 +175,28 @@ class _AboutUsPageState extends State<AboutUsPage>
                             ),
                             Padding(
                               padding: const EdgeInsets.all(8.0),
-                              child: Text(snapshot.data!.contactDetails!),
+                              child: Column(
+                                children: [
+                                  GestureDetector(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("8818909210"),
+                                    ),
+                                    onTap: (){
+                                      launch("tel:8818909210");
+                                    },
+                                  ),
+                                  GestureDetector(
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text("arvindmewada18@gmail.com"),
+                                    ),
+                                    onTap: (){
+                                      launch("mailto:arvindmewada18@gmail.com");
+                                    },
+                                  ),
+                                ],
+                              ),
                             )
                           ]))
                         ],
@@ -181,10 +211,23 @@ class _AboutUsPageState extends State<AboutUsPage>
                                 itemCount: snapshot.data!.length,
                                 itemBuilder:
                                     (BuildContext context, int index) =>
-                                        Image.network(
-                                  'https://careerliftprod.s3.amazonaws.com/mcldiscussionpost/' +
-                                      snapshot.data![index].postImage!,
-                                  fit: BoxFit.fill,
+                                Container(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 16),
+                                  decoration: BoxDecoration(
+
+                                      borderRadius: BorderRadius.all(Radius.circular(20))
+                                  ),
+                                  child: CachedNetworkImage(
+                                    imageUrl:  'https://careerliftprod.s3.amazonaws.com/mcldiscussionpost/' +
+                                        snapshot.data![index].postImage!,
+                                    fit: BoxFit.cover,
+                                    fadeInCurve: Curves.fastOutSlowIn,
+                                    placeholder: (context, url) => Padding(
+                                      padding: const EdgeInsets.all(100.0),
+                                      child: CircularProgressIndicator(),
+                                    ),
+                                    errorWidget: (context, url, error) => Icon(Icons.account_circle, color:Colors.grey,),
+                                  ),
                                 ),
                                 staggeredTileBuilder: (int index) =>
                                     new StaggeredTile.count(2, 2),
