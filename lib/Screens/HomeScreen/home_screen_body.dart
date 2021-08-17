@@ -13,6 +13,7 @@ import 'package:elearning/Screens/MainLayout/MainLayoutConstants.dart';
 import 'package:elearning/Screens/Pay/PayScreen.dart';
 import 'package:elearning/Screens/ProfileScreen/ProfileScreen.dart';
 import 'package:elearning/Screens/QuizScreen/QuizScreen.dart';
+import 'package:elearning/Screens/Setting/Setting.dart';
 import 'package:elearning/Screens/StudyZoneScreen/StudyZoneScreen.dart';
 import 'package:elearning/Screens/InstituteBatchManagementScreen/InstituteBatchManagement.dart';
 import 'package:elearning/components/nothingToShow.dart';
@@ -413,14 +414,10 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                   ListTile(
                     shape: listTileShape,
                     onTap: () {
-                      Fluttertoast.showToast(
-                          msg: "Setting on click..",
-                          toastLength: Toast.LENGTH_SHORT,
-                          gravity: ToastGravity.BOTTOM,
-                          timeInSecForIosWeb: 1,
-                          backgroundColor: Colors.grey,
-                          textColor: Colors.white,
-                          fontSize: 16.0);
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) => SettingScreen()));
                     },
                     leading: Icon(Icons.settings),
                     title: Text('Settings'),
