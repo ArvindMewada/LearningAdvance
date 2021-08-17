@@ -1,13 +1,14 @@
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:elearning/MyStore.dart';
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
-import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:elearning/Screens/DiscussScreen/NewPostTextContainer.dart';
 import 'package:elearning/constants.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
+import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
 import 'package:velocity_x/velocity_x.dart';
 
@@ -15,6 +16,7 @@ class NewPostPage extends StatefulWidget {
   final String tag;
   final String communityID;
   final String groupHashTag;
+
   const NewPostPage(
       {Key? key,
       required this.tag,
@@ -106,12 +108,12 @@ class _NewPostPageState extends State<NewPostPage> {
                 } else {
                   dynamic data = await compute(jsonDecode, value.body);
                   print(data['flag']);
-                  if (data['flag'] != 1)
-                    showCustomSnackBar(context, 'Unable to post.');
-                  else {
+                  if (data['flag'] == 1) {
                     Navigator.pop(context);
                     showCustomSnackBar(context,
                         'Posted Successfully and is in the review period.');
+                  } else {
+                    showCustomSnackBar(context, 'Unable to post.');
                   }
                 }
               });
@@ -155,7 +157,7 @@ class _NewPostPageState extends State<NewPostPage> {
           child: Column(
         children: [
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 25.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: Center(
               child: NewPostTextFieldContainer(
                 color: Colors.grey.shade200,
@@ -347,6 +349,9 @@ class _NewPostPageState extends State<NewPostPage> {
                 ],
               ),
             ),
+          ),
+          SizedBox(
+            height: 100,
           ),
         ],
       )),

@@ -4,6 +4,7 @@ import 'package:elearning/Screens/DiscussScreen/CommunityPostView.dart';
 import 'package:elearning/Screens/DiscussScreen/NewPostPage.dart';
 import 'package:elearning/dbModel.dart';
 import 'package:elearning/utils/LoadHTMLData.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:elearning/MyStore.dart';
@@ -48,6 +49,98 @@ class _CommunityPostsPageState extends State<CommunityPostsPage> {
     data.posts =
         data.posts!.where((element) => element.status == 'publish').toList();
     return data;
+  }
+
+  void viewComments(AsyncSnapshot<CommunityPosts> snapshot, int index){
+    Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) => CommunityPostView(
+                details: Post(
+                    post_id: snapshot
+                        .data!
+                        .posts![index]
+                        .postId!,
+                    community_id: snapshot
+                        .data!
+                        .posts![index]
+                        .communityId!,
+                    app_id: snapshot
+                        .data!
+                        .posts![index]
+                        .appId!,
+                    user_id: snapshot
+                        .data!
+                        .posts![index]
+                        .userId!,
+                    fname: snapshot
+                        .data!
+                        .posts![index]
+                        .fname!,
+                    lname: snapshot
+                        .data!
+                        .posts![index]
+                        .lname!,
+                    post_type: snapshot
+                        .data!
+                        .posts![index]
+                        .postType,
+                    post_title: snapshot
+                        .data!
+                        .posts![index]
+                        .postTitle!,
+                    post_description: snapshot
+                        .data!
+                        .posts![index]
+                        .postDescription!,
+                    video_url: snapshot
+                        .data!
+                        .posts![index]
+                        .videoUrl!,
+                    user_org_name: snapshot
+                        .data!
+                        .posts![index]
+                        .userOrgName,
+                    comment_count: snapshot
+                        .data!
+                        .posts![index]
+                        .commentCount!,
+                    upvote_count: snapshot
+                        .data!
+                        .posts![index]
+                        .upvoteCount!,
+                    view_count: snapshot
+                        .data!
+                        .posts![index]
+                        .viewCount!,
+                    city_name: snapshot
+                        .data!
+                        .posts![index]
+                        .cityName!,
+                    spam_count: snapshot
+                        .data!
+                        .posts![index]
+                        .spamCount!,
+                    post_date: snapshot
+                        .data!
+                        .posts![index]
+                        .postDate!,
+                    is_notify: snapshot.data!.posts![index].isNotify!,
+                    tag: snapshot.data!.posts![index].tag,
+                    question_reward: snapshot.data!.posts![index].questionReward,
+                    correct_response: snapshot.data!.posts![index].correctResponse,
+                    status: snapshot.data!.posts![index].status!,
+                    is_user_post: snapshot.data!.posts![index].isUserPost!,
+                    display_type: snapshot.data!.posts![index].displayType!,
+                    reserve_1: snapshot.data!.posts![index].reserve1!,
+                    group_hash_tag: snapshot.data!.posts![index].groupHashTag!,
+                    ques_attempt_flag: snapshot.data!.posts![index].quesAttemptFlag!,
+                    is_ques_correct: snapshot.data!.posts![index].isQuesCorrect!,
+                    attemptmsg: snapshot.data!.posts![index].attemptmsg!,
+                    post_image: snapshot.data!.posts![index].postImage!,
+                    upvoteFlag: snapshot.data!.posts![index].upvoteFlag!,
+                    job_title: snapshot.data!.posts![index].jobTitle!,
+                    user_image: snapshot.data!.posts![index].userImage))));
   }
 
   @override
@@ -172,13 +265,15 @@ class _CommunityPostsPageState extends State<CommunityPostsPage> {
                                                     style: TextStyle(
                                                         color: Colors.black),
                                                   ),
-                                                  onPressed: null,
+                                                  onPressed: ()=> Fluttertoast.showToast(msg: "like click"),
                                                   icon: Icon(
                                                     Icons.favorite_border,
                                                     color: Colors.black,
                                                   )),
                                               IconButton(
-                                                  onPressed: () {},
+                                                  onPressed: () {
+                                                    viewComments(snapshot, index);
+                                                  },
                                                   icon: Icon(Icons
                                                       .mode_comment_outlined)),
                                               TextButton.icon(
@@ -225,95 +320,7 @@ class _CommunityPostsPageState extends State<CommunityPostsPage> {
                                                       Colors.transparent),
                                             ),
                                             onPressed: () {
-                                              Navigator.push(
-                                                  context,
-                                                  MaterialPageRoute(
-                                                      builder: (context) => CommunityPostView(
-                                                          details: Post(
-                                                              post_id: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .postId!,
-                                                              community_id: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .communityId!,
-                                                              app_id: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .appId!,
-                                                              user_id: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .userId!,
-                                                              fname: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .fname!,
-                                                              lname: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .lname!,
-                                                              post_type: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .postType,
-                                                              post_title: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .postTitle!,
-                                                              post_description: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .postDescription!,
-                                                              video_url: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .videoUrl!,
-                                                              user_org_name: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .userOrgName,
-                                                              comment_count: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .commentCount!,
-                                                              upvote_count: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .upvoteCount!,
-                                                              view_count: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .viewCount!,
-                                                              city_name: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .cityName!,
-                                                              spam_count: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .spamCount!,
-                                                              post_date: snapshot
-                                                                  .data!
-                                                                  .posts![index]
-                                                                  .postDate!,
-                                                              is_notify: snapshot.data!.posts![index].isNotify!,
-                                                              tag: snapshot.data!.posts![index].tag,
-                                                              question_reward: snapshot.data!.posts![index].questionReward,
-                                                              correct_response: snapshot.data!.posts![index].correctResponse,
-                                                              status: snapshot.data!.posts![index].status!,
-                                                              is_user_post: snapshot.data!.posts![index].isUserPost!,
-                                                              display_type: snapshot.data!.posts![index].displayType!,
-                                                              reserve_1: snapshot.data!.posts![index].reserve1!,
-                                                              group_hash_tag: snapshot.data!.posts![index].groupHashTag!,
-                                                              ques_attempt_flag: snapshot.data!.posts![index].quesAttemptFlag!,
-                                                              is_ques_correct: snapshot.data!.posts![index].isQuesCorrect!,
-                                                              attemptmsg: snapshot.data!.posts![index].attemptmsg!,
-                                                              post_image: snapshot.data!.posts![index].postImage!,
-                                                              upvoteFlag: snapshot.data!.posts![index].upvoteFlag!,
-                                                              job_title: snapshot.data!.posts![index].jobTitle!,
-                                                              user_image: snapshot.data!.posts![index].userImage))));
+                                              viewComments(snapshot, index);
                                             },
                                             child: Text(
                                               'View all ' +

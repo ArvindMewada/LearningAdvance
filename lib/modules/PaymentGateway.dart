@@ -31,39 +31,39 @@ class PaymentGateway {
     }).then((value) async {
       print('Printing API Keys:');
       print('${value.body}');
-      // dynamic recievedData = await compute(jsonDecode, value.body);
-      // print('Printing API Keys:');
-      // if (recievedData['flag'] != 1)
-      //   print(recievedData);
-      // else
-      //   print(recievedData);
+      dynamic recievedData = await compute(jsonDecode, value.body);
+      print('Printing API Keys:');
+      if (recievedData['flag'] != 1)
+        print(recievedData);
+      else
+        print(recievedData);
     });
   }
 
   Future<void> openCheckout(double amount) async {
-    // getRazorPayAPIKeys();
-    this.finalAmount = amount.toString();
-    int finalAmount = (amount * 100).toInt();
-
-    var options = {
-      'key': razorPay_testKey,
-      'amount': finalAmount,
-      'name': 'ELearning',
-      'description': '',
-      'prefill': {
-        'contact': '${store.studentData.userContactNo}',
-        'email': '${store.studentData.userEmail}'
-      },
-      'external': {
-        'wallets': ['paytm']
-      }
-    };
-
-    try {
-      _razorPay.open(options);
-    } catch (e) {
-      print('Error: $e');
-    }
+    getRazorPayAPIKeys();
+    // this.finalAmount = amount.toString();
+    // int finalAmount = (amount * 100).toInt();
+    //
+    // var options = {
+    //   'key': "razorPay_testKey",
+    //   'amount': finalAmount,
+    //   'name': 'ELearning',
+    //   'description': '',
+    //   'prefill': {
+    //     'contact': '${store.studentData.userContactNo}',
+    //     'email': '${store.studentData.userEmail}'
+    //   },
+    //   'external': {
+    //     'wallets': ['paytm']
+    //   }
+    // };
+    //
+    // try {
+    //   _razorPay.open(options);
+    // } catch (e) {
+    //   print('Error: $e');
+    // }
   }
 
   Future<void> submitPaymentResponse(String paymentId) async {

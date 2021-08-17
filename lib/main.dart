@@ -4,10 +4,13 @@ import 'package:elearning/constants.dart';
 import 'package:elearning/objectbox.g.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
+
+import 'dbModel.dart';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -20,6 +23,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  MyStore store = VxState.store;
+
   @override
   void initState() {
     final MyStore store = VxState.store;
@@ -28,6 +33,31 @@ class _MyAppState extends State<MyApp> {
           Store(getObjectBoxModel(), directory: join(dir.path, 'objectbox'));
     });
     super.initState();
+  }
+
+  @override
+  void dispose() async {
+    // TODO: implement dispose
+    super.dispose();
+    store.dataStore.box<Post>().removeAll();
+    store.dataStore
+        .box<TestDataElement>()
+        .removeAll();
+    store.dataStore
+        .box<ExamElement>()
+        .removeAll();
+    store.dataStore
+        .box<TestReadingElement>()
+        .removeAll();
+    store.dataStore
+        .box<FLTExamElement>()
+        .removeAll();
+    store.dataStore
+        .box<GroupElement>()
+        .removeAll();
+    store.dataStore
+        .box<BookmarkElement>()
+        .removeAll();
   }
 
   @override

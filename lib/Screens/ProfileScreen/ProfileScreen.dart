@@ -116,44 +116,44 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 )),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Material(
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                child: ListTile(
-                    onTap: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => StudentDashboard()));
-                    },
-                    title: Text('Student Dashboard',
-                        style: TextStyle(fontSize: 20)),
-                    trailing: Icon(
-                      Icons.keyboard_arrow_right,
-                      color: kPrimaryColor,
-                      size: 30,
-                    )),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Material(
-                elevation: 10,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10)),
-                child: ListTile(
-                    title: Text('Frequently Asked Questions',
-                        style: TextStyle(fontSize: 20)),
-                    trailing: Icon(
-                      Icons.keyboard_arrow_right,
-                      color: kPrimaryColor,
-                      size: 30,
-                    )),
-              ),
-            ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: Material(
+            //     elevation: 10,
+            //     shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(10)),
+            //     child: ListTile(
+            //         onTap: () {
+            //           Navigator.push(
+            //               context,
+            //               MaterialPageRoute(
+            //                   builder: (context) => StudentDashboard()));
+            //         },
+            //         title: Text('Student Dashboard',
+            //             style: TextStyle(fontSize: 20)),
+            //         trailing: Icon(
+            //           Icons.keyboard_arrow_right,
+            //           color: kPrimaryColor,
+            //           size: 30,
+            //         )),
+            //   ),
+            // ),
+            // Padding(
+            //   padding: const EdgeInsets.all(8.0),
+            //   child: Material(
+            //     elevation: 10,
+            //     shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(10)),
+            //     child: ListTile(
+            //         title: Text('Frequently Asked Questions',
+            //             style: TextStyle(fontSize: 20)),
+            //         trailing: Icon(
+            //           Icons.keyboard_arrow_right,
+            //           color: kPrimaryColor,
+            //           size: 30,
+            //         )),
+            //   ),
+            // ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Material(

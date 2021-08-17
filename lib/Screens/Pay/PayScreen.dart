@@ -8,6 +8,7 @@ import 'package:elearning/schemas/paymentHistorySchema.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:velocity_x/velocity_x.dart';
 
@@ -88,7 +89,7 @@ class _PayScreenState extends State<PayScreen> {
                       double amount = double.parse(_controller.text);
                       if (amount <= 0) {
                         print('Enter amount greater than 0.');
-                      } else {
+                      }else {
                         PaymentGateway().openCheckout(amount);
                         getPaymentHistory().then((value) => setState(() {}));
                       }

@@ -77,10 +77,12 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
       });
       print('ffffffffffffffffffffffff');
       print(tempDataCheck);
+
       if (tempDataCheck.length != 0) {
         tempdata += tempDataCheck
             .map((e) => HomeElements.fromJson(jsonDecode(e)))
             .toList();
+
         prefs.setStringList(
             'homelist', tempdata.map((e) => jsonEncode(e)).toList());
       }
@@ -184,6 +186,13 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
     isDone = false;
     _tiles = [];
     initialise();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    prefs.clear();
   }
 
   @override
@@ -420,7 +429,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                               builder: (context) => SettingScreen()));
                     },
                     leading: Icon(Icons.settings),
-                    title: Text('Settings'),
+                    title: Text('Settings (Clear Cache)'),
                   ),
                   ListTile(
                     title: DefaultTextStyle(
