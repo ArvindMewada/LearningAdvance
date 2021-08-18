@@ -4,10 +4,13 @@ import 'package:elearning/schemas/liveClassSchema.dart';
 import 'package:elearning/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
+// import 'package:permission_handler/permission_handler.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:elearning/utils/webview.dart';
+
 
 class LiveClassesScreen extends StatefulWidget {
   const LiveClassesScreen({Key? key}) : super(key: key);
@@ -19,6 +22,7 @@ class LiveClassesScreen extends StatefulWidget {
 class _LiveClassesScreenState extends State<LiveClassesScreen>
     with KeepAliveParentDataMixin {
   MyStore store = VxState.store;
+
 
   //Api call for getting data of past classes
   Future<LiveClassScheme> fetchUpcomingClasses() async {
@@ -141,12 +145,29 @@ class _LiveClassesScreenState extends State<LiveClassesScreen>
 }
 
 //to display different cards
-class LiveClassCard extends StatelessWidget {
+class LiveClassCard extends StatefulWidget {
   final LiveClass data;
   final int tabNumber;
-
   const LiveClassCard({required this.data, Key? key, required this.tabNumber})
       : super(key: key);
+
+  @override
+  _LiveClassCardState createState() => _LiveClassCardState();
+}
+
+class _LiveClassCardState extends State<LiveClassCard> {
+  bool isMicPermission = false;
+
+  void permissionCheck() async {
+    Fluttertoast.showToast(msg: "request");
+    // var status = await Permission.microphone.request();
+    // if (status.isGranted) {
+    //   setState(() {
+    //     isMicPermission = true;
+    //     Fluttertoast.showToast(msg: "request true");
+    //   });
+    // }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -156,13 +177,13 @@ class LiveClassCard extends StatelessWidget {
         children: <Widget>[
           ListTile(
             title: Text(
-              data.title!,
+              widget.data.title!,
               style: TextStyle(
                 fontWeight: FontWeight.bold,
                 color: Color(0xFF3F5AA6),
               ),
             ),
-            subtitle: Text(data.comment!),
+            subtitle: Text(widget.data.comment!),
           ),
           // date of the test
           Row(
@@ -177,7 +198,7 @@ class LiveClassCard extends StatelessWidget {
               Container(
                 padding: EdgeInsets.only(left: 5),
                 child: Text(
-                  data.classDate!,
+                  widget.data.classDate!,
                   style: TextStyle(
                     color: Colors.green,
                   ),
@@ -202,7 +223,7 @@ class LiveClassCard extends StatelessWidget {
                   Container(
                     padding: EdgeInsets.only(left: 5),
                     child: Text(
-                      data.startTime! + ' - ' + data.endTime!,
+                      widget.data.startTime! + ' - ' + widget.data.endTime!,
                       style: TextStyle(
                         color: Colors.green,
                       ),
@@ -213,7 +234,7 @@ class LiveClassCard extends StatelessWidget {
               Container(
                 padding: EdgeInsets.only(right: 15),
                 child: Text(
-                  data.duration!,
+                  widget.data.duration!,
                   style: TextStyle(
                     color: Colors.green,
                   ),
@@ -227,22 +248,22 @@ class LiveClassCard extends StatelessWidget {
             children: <Widget>[
               TextButton(
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all((tabNumber == 0)
-                        ? (isClassStarted(data.startTime!)
+                    backgroundColor: MaterialStateProperty.all((widget.tabNumber == 0)
+                        ? (isClassStarted(widget.data.startTime!)
                             ? Colors.blue[900]
                             : Colors.grey[500])
-                        : data.recordedLink.isEmptyOrNull
+                        : widget.data.recordedLink.isEmptyOrNull
                             ? Colors.grey[500]
                             : Colors.blue[900]),
                   ),
 
                   // tabNumber 0:LiveClass Tab, 1:Past Class Tab
                   child: Text(
-                    (tabNumber == 0)
-                        ? isClassStarted(data.startTime!)
+                    (widget.tabNumber == 0)
+                        ? isClassStarted(widget.data.startTime!)
                             ? 'Join'
                             : 'Scheduled'
-                        : data.recordedLink.isEmptyOrNull
+                        : widget.data.recordedLink.isEmptyOrNull
                             ? 'N/A'
                             : 'Play',
                     style: TextStyle(
@@ -251,16 +272,20 @@ class LiveClassCard extends StatelessWidget {
                     ),
                   ),
                   onPressed: () {
-                    if ((tabNumber == 1 && !data.recordedLink.isEmptyOrNull) ||
-                        (tabNumber == 0 && isClassStarted(data.startTime!))) {
+                    if ((widget.tabNumber == 1 && !widget.data.recordedLink.isEmptyOrNull) ||
+                        (widget.tabNumber == 0 && isClassStarted(widget.data.startTime!))) {
                       //to disable click when recording is not available
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (BuildContext context) => MyWebView(
-                                selectedUrl: (tabNumber == 0)
-                                    ? data.url
-                                    : data.recordedLink,
-                                tabNo: tabNumber,
-                              )));
+                      permissionCheck();
+                     if(isMicPermission){
+                       Navigator.of(context).push(MaterialPageRoute(
+                           builder: (BuildContext context) => MyWebView(
+                             selectedUrl: (widget.tabNumber == 0)
+                                 ? widget.data.url
+                                 : widget.data.recordedLink,
+                             tabNo: widget.tabNumber,
+                           )));
+                     }
+
                     }
                   }),
               const SizedBox(width: 8),
@@ -271,8 +296,6 @@ class LiveClassCard extends StatelessWidget {
     );
   }
 
-  //Example time 03:00 pm
-  //check weather class is started or not
   bool isClassStarted(String classStartTime) {
     int a = int.parse(classStartTime.substring(0, 2));
     int b = classStartTime.substring(6) == 'pm' ? 12 : 0;

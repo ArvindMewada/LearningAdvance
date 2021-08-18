@@ -8,6 +8,7 @@ import 'package:elearning/constants.dart';
 import 'package:elearning/dbModel.dart';
 import 'package:elearning/functions/googleSignInApi.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -205,6 +206,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   store.dataStore
                                       .box<BookmarkElement>()
                                       .removeAll();
+                                  DefaultCacheManager().emptyCache();
                                   SVProgressHUD.dismiss();
                                   Navigator.pushAndRemoveUntil(
                                       context,

@@ -6,6 +6,7 @@ import 'package:elearning/dbModel.dart';
 import 'package:elearning/objectbox.g.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:http/http.dart' as http;
@@ -186,9 +187,33 @@ class _MainLayoutState extends State<MainLayout> {
   }
 
   @override
-  void dispose() {
+  void dispose() async {
+    // TODO: implement dispose
     super.dispose();
+    final MyStore store = VxState.store;
+    prefs.clear();
+    DefaultCacheManager().emptyCache();
+    store.dataStore.box<Post>().removeAll();
+    store.dataStore
+        .box<TestDataElement>()
+        .removeAll();
+    store.dataStore
+        .box<ExamElement>()
+        .removeAll();
+    store.dataStore
+        .box<TestReadingElement>()
+        .removeAll();
+    store.dataStore
+        .box<FLTExamElement>()
+        .removeAll();
+    store.dataStore
+        .box<GroupElement>()
+        .removeAll();
+    store.dataStore
+        .box<BookmarkElement>()
+        .removeAll();
   }
+
 
   @override
   void initState() {

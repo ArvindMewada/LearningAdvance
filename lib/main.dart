@@ -27,7 +27,6 @@ class _MyAppState extends State<MyApp> {
 
   @override
   void initState() {
-    final MyStore store = VxState.store;
     getApplicationDocumentsDirectory().then((dir) {
       store.dataStore =
           Store(getObjectBoxModel(), directory: join(dir.path, 'objectbox'));
@@ -35,30 +34,6 @@ class _MyAppState extends State<MyApp> {
     super.initState();
   }
 
-  @override
-  void dispose() async {
-    // TODO: implement dispose
-    super.dispose();
-    store.dataStore.box<Post>().removeAll();
-    store.dataStore
-        .box<TestDataElement>()
-        .removeAll();
-    store.dataStore
-        .box<ExamElement>()
-        .removeAll();
-    store.dataStore
-        .box<TestReadingElement>()
-        .removeAll();
-    store.dataStore
-        .box<FLTExamElement>()
-        .removeAll();
-    store.dataStore
-        .box<GroupElement>()
-        .removeAll();
-    store.dataStore
-        .box<BookmarkElement>()
-        .removeAll();
-  }
 
   @override
   Widget build(BuildContext context) {

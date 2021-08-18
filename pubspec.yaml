@@ -13,8 +13,10 @@ dependencies:
   lottie: ^1.0.1
   cupertino_icons: ^1.0.2 
   google_fonts: ^2.1.0
+#  permission_handler: ^8.1.4+2
   google_nav_bar: ^5.0.5
   flutter_advanced_drawer: ^1.1.0
+  flutter_cache_manager: ^3.1.2
   http: ^0.13.3
   shared_preferences: ^2.0.6
   velocity_x: ^3.3.0
