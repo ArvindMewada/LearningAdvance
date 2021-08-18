@@ -7,7 +7,7 @@ import 'package:flutter/rendering.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
-// import 'package:permission_handler/permission_handler.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:elearning/utils/webview.dart';
 
@@ -160,13 +160,10 @@ class _LiveClassCardState extends State<LiveClassCard> {
 
   void permissionCheck() async {
     Fluttertoast.showToast(msg: "request");
-    // var status = await Permission.microphone.request();
-    // if (status.isGranted) {
-    //   setState(() {
-    //     isMicPermission = true;
-    //     Fluttertoast.showToast(msg: "request true");
-    //   });
-    // }
+   await [
+      Permission.microphone,
+      Permission.camera,
+    ].request();
   }
 
   @override
@@ -276,16 +273,7 @@ class _LiveClassCardState extends State<LiveClassCard> {
                         (widget.tabNumber == 0 && isClassStarted(widget.data.startTime!))) {
                       //to disable click when recording is not available
                       permissionCheck();
-                     if(isMicPermission){
-                       Navigator.of(context).push(MaterialPageRoute(
-                           builder: (BuildContext context) => MyWebView(
-                             selectedUrl: (widget.tabNumber == 0)
-                                 ? widget.data.url
-                                 : widget.data.recordedLink,
-                             tabNo: widget.tabNumber,
-                           )));
-                     }
-
+                      permissionGranted();
                     }
                   }),
               const SizedBox(width: 8),
@@ -296,6 +284,17 @@ class _LiveClassCardState extends State<LiveClassCard> {
     );
   }
 
+  void permissionGranted() async {
+    if(await Permission.microphone.isGranted){
+      Navigator.of(context).push(MaterialPageRoute(
+          builder: (BuildContext context) => MyWebView(
+            selectedUrl: (widget.tabNumber == 0)
+                ? widget.data.url
+                : widget.data.recordedLink,
+            tabNo: widget.tabNumber,
+          )));
+    }
+  }
   bool isClassStarted(String classStartTime) {
     int a = int.parse(classStartTime.substring(0, 2));
     int b = classStartTime.substring(6) == 'pm' ? 12 : 0;

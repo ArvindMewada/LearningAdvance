@@ -25,6 +25,7 @@ class _PayScreenState extends State<PayScreen> {
   late String finalAmount;
   late Razorpay _razorPay;
   bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -112,31 +113,34 @@ class _PayScreenState extends State<PayScreen> {
   Future<void> _onPaymentSuccess(PaymentSuccessResponse response) async {
     print('Payment Success');
     if (response.paymentId != null) {
-      // print('Order Id: ' + response.orderId);
-      // print('@@@@@@@Payment Id: ' + response.paymentId.toString());
-      // print('Signature Id: ' + response.signature);
       submitPaymentResponse(response.paymentId!);
-      setState(() {
-        _controller.text = "";
-        getPaymentHistory();
-        setState(() {
-          isLoading = false;
-        });
-      });
+      _screenPayment();
     } else {
       submitPaymentResponse('Test Payment');
     }
+  }
+
+  void _screenPayment() {
+    setState(() {
+      _controller.text = "";
+      getPaymentHistory();
+      setState(() {
+        isLoading = false;
+      });
+    });
   }
 
   void _onPaymentError(PaymentFailureResponse response) {
     print('Payment Failed');
     print('Error Code Id: ' + response.code!.toString());
     print('Error Message Id: ' + response.message!.toString());
+    _screenPayment();
   }
 
   void _onExternalWallet(ExternalWalletResponse response) {
     print('Payment External Wallet');
     print('Error Code Id: ' + response.walletName!);
+    _screenPayment();
   }
 
   Future<PaymentHistory> getPaymentHistory() async {
@@ -204,28 +208,29 @@ class _PayScreenState extends State<PayScreen> {
               ],
             ),
           ),
-          Expanded(
-            child: isLoading ? Center(child: CircularProgressIndicator()) : FutureBuilder(
-                future: getPaymentHistory(),
-                builder: (context, AsyncSnapshot<PaymentHistory> snapshot) {
-                  if (snapshot.hasData) if (snapshot
-                      .data!.response!.isEmpty)
-                    return Center(child: Text('No Payment History'));
-                  else
-                    return ListView.builder(
-                        itemCount: snapshot.data!.response!.length,
-                        itemBuilder: (context, index) {
-                          return ListTile(
-                            title: Text('₹ ' +
-                                snapshot.data!.response![index].amount!),
-                            subtitle: Text(snapshot
-                                .data!.response![index].createdOn!
-                                .substring(0, 16)),
-                          );
-                        });
-                  return Center(child: CircularProgressIndicator());
-                }),
-          )
+          isLoading
+              ? Center(child: CircularProgressIndicator())
+              : FutureBuilder(
+                  future: getPaymentHistory(),
+                  builder: (context, AsyncSnapshot<PaymentHistory> snapshot) {
+                    if (snapshot.hasData) if (snapshot.data!.response!.isEmpty)
+                      return Center(child: Text('No Payment History'));
+                    else
+                      return Expanded(
+                        child: ListView.builder(
+                            itemCount: snapshot.data!.response!.length,
+                            itemBuilder: (context, index) {
+                              return ListTile(
+                                title: Text('₹ ' +
+                                    snapshot.data!.response![index].amount!),
+                                subtitle: Text(snapshot
+                                    .data!.response![index].createdOn!
+                                    .substring(0, 16)),
+                              );
+                            }),
+                      );
+                    return Center(child: CircularProgressIndicator());
+                  })
         ],
       ),
     );
