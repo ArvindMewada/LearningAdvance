@@ -34,6 +34,7 @@ class _InstituteBatchManagementState extends State<InstituteBatchManagement> {
 
   var _batchDataJSON = new Map();
   bool dataFound = false;
+  List  batchList  = [];
 
   void fetchBatchDetails() async {
     try {
@@ -56,21 +57,23 @@ class _InstituteBatchManagementState extends State<InstituteBatchManagement> {
   }
 
   Widget batchManagement() {
-    final batchList = <Widget>[];
     if(_batchDataJSON['flag']==1) {
       if (dataFound) {
-        for (int i = 0; i < _batchDataJSON['batch_data'].length; i++) {
-          // print(_batchDataJSON['batch_detail'][i]);
-          // print(_batchDataJSON['batch_data'][i]['batch_name']);
-          batchList.add(listContent(_batchDataJSON['batch_detail'][i],
-              _batchDataJSON['batch_data'][i]['batch_name']));
-        }
+        _batchDataJSON.forEach((key, value) {
+          batchList.add(value);
+        });
       }
       return Container(
-        child: ListView(
-          children: batchList,
+        child: ListView.builder(
+          itemBuilder: (context, i) {
+            return  listContent(_batchDataJSON['batch_detail'][i],
+                _batchDataJSON['batch_data'][i]['batch_name']);
+          },
+          itemCount: batchList.length,
         ),
       );
+    }else if(batchList.length == 0){
+      return Center(child: CircularProgressIndicator());
     }else{
       return noDataFound();
     }

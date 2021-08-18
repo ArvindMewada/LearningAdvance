@@ -1,4 +1,5 @@
 import 'dart:convert';
+
 import 'package:elearning/MyStore.dart';
 import 'package:elearning/Screens/MainLayout/MainLayout.dart';
 import 'package:elearning/Screens/SignupScreen/components/or_divider.dart';
@@ -10,15 +11,15 @@ import 'package:elearning/functions/googleSignInApi.dart';
 import 'package:elearning/schemas/studentDataSchema.dart';
 import 'package:elearning/schemas/studentPermissionSchema.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
+import 'package:flutter_signin_button/flutter_signin_button.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
-import 'package:flutter/material.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
-import 'package:flutter_signin_button/flutter_signin_button.dart';
 
 class LoginScreen extends StatefulWidget {
   @override
@@ -97,7 +98,6 @@ class _LoginScreenState extends State<LoginScreen> {
                           SVProgressHUDMaskType.black);
                       SVProgressHUD.show();
 
-
                       //Checks the user id and password from the server
                       await http.post(Uri.parse(studentDetailsAPI_URL), body: {
                         'app_id': appID,
@@ -122,7 +122,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             showCustomSnackBar(context,
                                 'No user found with these credentials, please check your email address and password');
                           } else {
-
                             //User Exists
                             store.studentData = StudentData.fromJson(data);
                             print(store.studentData);
@@ -212,7 +211,6 @@ class _LoginScreenState extends State<LoginScreen> {
                                   context, 'No data exist for given email id');
                               await GoogleSignInApi.logout();
                             } else {
-
                               //User Exists
                               store.studentData = StudentData.fromJson(data);
                               store.studentHash = store.studentData.userHash!;
@@ -286,48 +284,44 @@ class _LoginScreenState extends State<LoginScreen> {
                             SVProgressHUD.setRingThickness(5);
                             SVProgressHUD.setRingRadius(5);
                             SVProgressHUD.setDefaultMaskType(
-                                SVProgressHUDMaskType.black
-                            );
+                                SVProgressHUDMaskType.black);
                             SVProgressHUD.show();
                             store.emailID = userData["email"];
                             print(userData);
 
-                            await http.post(Uri.parse(appCheckEmail_URL), body: {
-                              'hash': app_hash,
-                              'email': store.emailID,
-                              'app_id': appID
-                            }).then((studentData) async {
+                            await http.post(Uri.parse(appCheckEmail_URL),
+                                body: {
+                                  'hash': app_hash,
+                                  'email': store.emailID,
+                                  'app_id': appID
+                                }).then((studentData) async {
                               print(studentData.body);
                               if (studentData.statusCode != 200) {
                                 SVProgressHUD.dismiss();
-                                showCustomSnackBar(context,
-                                    'Error connecting to server');
+                                showCustomSnackBar(
+                                    context, 'Error connecting to server');
                                 await FacebookAuth.instance.logOut();
                               } else {
                                 //No netwrk issue
-                                dynamic data = await compute(
-                                    jsonDecode, studentData.body);
-                                store.studentData =
-                                    StudentData.fromJson(data);
-                                store.studentHash =
-                                store.studentData.userHash!;
-                                store.studentID =
-                                store.studentData.userId!;
+                                dynamic data =
+                                    await compute(jsonDecode, studentData.body);
+                                store.studentData = StudentData.fromJson(data);
+                                store.studentHash = store.studentData.userHash!;
+                                store.studentID = store.studentData.userId!;
 
                                 //Getting user permission from the server
                                 await http.post(
                                     Uri.parse(studentPermissionAPI_URL),
                                     body: {
                                       'app_hash': app_hash,
-                                      'user_hash':
-                                      store.studentData.userHash,
+                                      'user_hash': store.studentData.userHash,
                                       'user_id': store.studentData.userId
                                     }).then((userPermission) async {
                                   print(userPermission);
                                   if (userPermission.statusCode != 200) {
                                     SVProgressHUD.dismiss();
-                                    showCustomSnackBar(context,
-                                        'Error connecting to server');
+                                    showCustomSnackBar(
+                                        context, 'Error connecting to server');
                                     await FacebookAuth.instance.logOut();
                                   } else {
                                     dynamic data = await compute(
@@ -336,25 +330,23 @@ class _LoginScreenState extends State<LoginScreen> {
                                       SVProgressHUD.dismiss();
                                       showCustomSnackBar(context,
                                           'User not granted permission to use this application');
-                                      await FacebookAuth.instance
-                                          .logOut();
+                                      await FacebookAuth.instance.logOut();
                                     } else {
-                                      store.studentPermission =StudentPermission.fromJson(data);
+                                      store.studentPermission =
+                                          StudentPermission.fromJson(data);
                                       print(store.studentPermission);
                                       SharedPreferences prefs =
-                                      await SharedPreferences
-                                          .getInstance();
+                                          await SharedPreferences.getInstance();
                                       prefs.setBool('isAuth', true);
                                       prefs.setString('loginType', 'fb');
                                       prefs.setString('email', store.emailID);
                                       SVProgressHUD.dismiss();
                                       await FacebookAuth.instance.logOut();
                                       Navigator.pushAndRemoveUntil(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) =>
-                                                  MainLayout()),
-                                              (route) => false,
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => MainLayout()),
+                                        (route) => false,
                                       );
                                     }
                                   }
