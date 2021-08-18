@@ -190,9 +190,21 @@ class _MainLayoutState extends State<MainLayout> {
   void dispose() async {
     // TODO: implement dispose
     super.dispose();
+    removeAllChachec();
+  }
+
+  @override
+  void deactivate() {
+    // TODO: implement deactivate
+    super.deactivate();
+    removeAllChachec();
+  }
+
+  void removeAllChachec() async {
     final MyStore store = VxState.store;
+    SharedPreferences prefs =
+    await SharedPreferences.getInstance();
     prefs.clear();
-    DefaultCacheManager().emptyCache();
     store.dataStore.box<Post>().removeAll();
     store.dataStore
         .box<TestDataElement>()
@@ -213,7 +225,6 @@ class _MainLayoutState extends State<MainLayout> {
         .box<BookmarkElement>()
         .removeAll();
   }
-
 
   @override
   void initState() {

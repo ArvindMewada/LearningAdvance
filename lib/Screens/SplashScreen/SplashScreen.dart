@@ -5,11 +5,13 @@ import 'package:elearning/Screens/MainLayout/MainLayout.dart';
 import 'package:elearning/Screens/SplashScreen/SplashScreenConstants.dart';
 import 'package:elearning/Screens/Welcome/welcome_screen.dart';
 import 'package:elearning/constants.dart';
+import 'package:elearning/dbModel.dart';
 import 'package:elearning/schemas/clientDataSchema.dart';
 import 'package:elearning/schemas/studentDataSchema.dart';
 import 'package:elearning/schemas/studentPermissionSchema.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:velocity_x/velocity_x.dart';
 import '../ExploreScreen/ExploreScreen.dart';
 import 'package:lottie/lottie.dart';
@@ -203,7 +205,41 @@ class _SplashScreenState extends State<SplashScreen>
   @override
   void dispose() {
     controller.dispose();
+    removeAllChachec();
     super.dispose();
+  }
+
+  @override
+  void deactivate() {
+    // TODO: implement deactivate
+    super.deactivate();
+    removeAllChachec();
+  }
+
+  void removeAllChachec() async {
+    final MyStore store = VxState.store;
+    SharedPreferences prefs =
+    await SharedPreferences.getInstance();
+    prefs.clear();
+    store.dataStore.box<Post>().removeAll();
+    store.dataStore
+        .box<TestDataElement>()
+        .removeAll();
+    store.dataStore
+        .box<ExamElement>()
+        .removeAll();
+    store.dataStore
+        .box<TestReadingElement>()
+        .removeAll();
+    store.dataStore
+        .box<FLTExamElement>()
+        .removeAll();
+    store.dataStore
+        .box<GroupElement>()
+        .removeAll();
+    store.dataStore
+        .box<BookmarkElement>()
+        .removeAll();
   }
 
   @override
