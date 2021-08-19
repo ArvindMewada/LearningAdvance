@@ -209,15 +209,15 @@ class _PayScreenState extends State<PayScreen> {
             ),
           ),
           isLoading
-              ? Center(child: CircularProgressIndicator())
-              : FutureBuilder(
-                  future: getPaymentHistory(),
-                  builder: (context, AsyncSnapshot<PaymentHistory> snapshot) {
-                    if (snapshot.hasData) if (snapshot.data!.response!.isEmpty)
-                      return Center(child: Text('No Payment History'));
-                    else
-                      return Expanded(
-                        child: ListView.builder(
+              ? Expanded(child: Center(child: CircularProgressIndicator()))
+              : Expanded(
+                child: FutureBuilder(
+                    future: getPaymentHistory(),
+                    builder: (context, AsyncSnapshot<PaymentHistory> snapshot) {
+                      if (snapshot.hasData) if (snapshot.data!.response!.isEmpty)
+                        return Center(child: Text('No Payment History'));
+                      else
+                        return ListView.builder(
                             itemCount: snapshot.data!.response!.length,
                             itemBuilder: (context, index) {
                               return ListTile(
@@ -227,10 +227,10 @@ class _PayScreenState extends State<PayScreen> {
                                     .data!.response![index].createdOn!
                                     .substring(0, 16)),
                               );
-                            }),
-                      );
-                    return Center(child: CircularProgressIndicator());
-                  })
+                            });
+                      return Center(child: CircularProgressIndicator());
+                    }),
+              )
         ],
       ),
     );
