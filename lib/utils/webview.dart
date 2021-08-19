@@ -95,7 +95,8 @@ class _MyWebViewState extends State<MyWebView> {
           child: new Center(
             child: TextButton(
               onPressed: (){
-                String ur = "https://google.com${widget.selectedUrl!};";
+                print("######${widget.selectedUrl}");
+                String ur = "${widget.selectedUrl}";
                 launchURL(ur);
               },
               child: Text("hello"),
@@ -124,7 +125,7 @@ class _MyWebViewState extends State<MyWebView> {
 
   launchURL(String url) async {
     if (await canLaunch(url)) {
-      await launch(url, forceWebView: true);
+      await launch(url,enableJavaScript: true, webOnlyWindowName: "https//google.in");
     } else {
       throw 'Could not launch $url';
     }
