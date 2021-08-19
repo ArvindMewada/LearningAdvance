@@ -301,98 +301,92 @@ class OnboardingScreenState extends State<OnboardingScreen> {
   Widget _showPageData(OnboardingModel page, bool isTnC) {
     return OrientationBuilder(builder: (context, orientation) {
       return orientation == Orientation.portrait
-          ? ListView(
-              children: [
-                Column(
-                  mainAxisSize: MainAxisSize.max,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                      child: Center(
-                        child: Image(
-                          image: AssetImage(page.imagePath),
-                        ),
-                      ),
+          ? Column(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                  height: MediaQuery.of(context).size.height / 3,
+                  child: Center(
+                    child: Image(
+                      image: AssetImage(page.imagePath),
                     ),
-                    Expanded(
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: Column(
-                          children: [
-                            Text(
-                              page.title,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w700,
-                                color: page.titleColor,
-                                fontSize: 20.sp,
-                              ),
-                            ),
-                            SizedBox(height: 15.0),
-                            Text(
-                              page.description,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                fontWeight: FontWeight.w400,
-                                color: page.descripColor,
-                                fontSize: 15.sp,
-                              ),
-                            ),
-                            SizedBox(
-                              height: 2.h,
-                            ),
-                            isTnC
-                                ? Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 30),
-                                    child: TextButton(
-                                        onPressed: () {
-                                          showDialog(
-                                              context: context,
-                                              builder: (BuildContext context) =>
-                                                  DialogBox(
-                                                    topIcon: Image.asset(
-                                                        "assets/5.png"),
-                                                    title: 'Terms & Conditions',
-                                                    text: 'Close',
-                                                    children: [
-                                                      Text(
-                                                        tncContent,
-                                                        style: TextStyle(
-                                                            fontSize: 12.sp),
-                                                        textAlign:
-                                                            TextAlign.center,
-                                                      ),
-                                                      SizedBox(
-                                                        height: 1.h,
-                                                      )
-                                                    ],
-                                                  ));
-                                        },
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(8.0),
-                                          child: Text(
-                                            'Terms & Conditions',
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 15),
-                                          ),
-                                        ),
-                                        style: TextButton.styleFrom(
-                                            elevation: 10,
-                                            backgroundColor: Colors.blue[400],
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(
-                                                        20)))))
-                                : Text('')
-                          ],
+                  ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        Text(
+                          page.title,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w700,
+                            color: page.titleColor,
+                            fontSize: 20.sp,
+                          ),
                         ),
-                      ),
+                        SizedBox(height: 15.0),
+                        Text(
+                          page.description,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w400,
+                            color: page.descripColor,
+                            fontSize: 15.sp,
+                          ),
+                        ),
+                        SizedBox(
+                          height: 2.h,
+                        ),
+                        isTnC
+                            ? Padding(
+                                padding:
+                                    const EdgeInsets.symmetric(horizontal: 30),
+                                child: TextButton(
+                                    onPressed: () {
+                                      showDialog(
+                                          context: context,
+                                          builder: (BuildContext context) =>
+                                              DialogBox(
+                                                topIcon:
+                                                    Image.asset("assets/5.png"),
+                                                title: 'Terms & Conditions',
+                                                text: 'Close',
+                                                children: [
+                                                  Text(
+                                                    tncContent,
+                                                    style: TextStyle(
+                                                        fontSize: 12.sp),
+                                                    textAlign: TextAlign.center,
+                                                  ),
+                                                  SizedBox(
+                                                    height: 1.h,
+                                                  )
+                                                ],
+                                              ));
+                                    },
+                                    child: Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: Text(
+                                        'Terms & Conditions',
+                                        style: TextStyle(
+                                            color: Colors.white, fontSize: 15),
+                                      ),
+                                    ),
+                                    style: TextButton.styleFrom(
+                                        elevation: 10,
+                                        backgroundColor: Colors.blue[400],
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(20)))))
+                            : Text('')
+                      ],
                     ),
-                  ],
+                  ),
                 ),
               ],
             )
