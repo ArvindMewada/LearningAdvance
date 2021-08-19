@@ -1,15 +1,16 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:elearning/MyStore.dart';
 import 'package:elearning/schemas/liveClassSchema.dart';
 import 'package:elearning/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:elearning/utils/webview.dart';
+import 'package:webview_flutter/webview_flutter.dart';
 
 
 class LiveClassesScreen extends StatefulWidget {
@@ -157,15 +158,22 @@ class LiveClassCard extends StatefulWidget {
 
 class _LiveClassCardState extends State<LiveClassCard> {
   bool isMicPermission = false;
-
   void permissionCheck() async {
-    Fluttertoast.showToast(msg: "request");
-   await [
+    await [
       Permission.microphone,
       Permission.camera,
     ].request();
+   if(await Permission.microphone.status.isGranted){
+     permissionGranted();
+   }
   }
 
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+  }
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -271,9 +279,14 @@ class _LiveClassCardState extends State<LiveClassCard> {
                   onPressed: () {
                     if ((widget.tabNumber == 1 && !widget.data.recordedLink.isEmptyOrNull) ||
                         (widget.tabNumber == 0 && isClassStarted(widget.data.startTime!))) {
-                      //to disable click when recording is not available
                       permissionCheck();
-                      permissionGranted();
+
+                      //to disable click when recording is not available
+//                       window.navigator.getUserMedia(audio: true, video: true).then(() {
+// //code to execute after accessing
+//                         permissionCheck();
+//                       });
+
                     }
                   }),
               const SizedBox(width: 8),

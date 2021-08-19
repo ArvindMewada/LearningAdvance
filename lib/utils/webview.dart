@@ -1,18 +1,16 @@
 import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class MyWebView extends StatefulWidget {
   final String? selectedUrl;
   final int tabNo;
 
-
-  MyWebView({
-    required this.selectedUrl,
-    required this.tabNo
-  });
+  MyWebView({required this.selectedUrl, required this.tabNo});
 
   @override
   _MyWebViewState createState() => _MyWebViewState();
@@ -91,22 +89,45 @@ class _MyWebViewState extends State<MyWebView> {
           return Future.value(true);
         }
       },
-      child:
-      Scaffold(
+      child: Scaffold(
+        resizeToAvoidBottomInset: true,
         body: SafeArea(
-          child: WebviewScaffold(
-            key: scaffoldKey,
-            url: widget.selectedUrl!,
-            appCacheEnabled: false,
-            clearCookies: true,
-            clearCache: true,
-            debuggingEnabled: true,
-            userAgent:
-            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36',
+          child: new Center(
+            child: TextButton(
+              onPressed: (){
+                String ur = "https://google.com${widget.selectedUrl!};";
+                launchURL(ur);
+              },
+              child: Text("hello"),
+              // child: WebviewScaffold(
+              //   key: scaffoldKey,
+              //   url: widget.selectedUrl!,
+              //   appCacheEnabled: false,
+              //   clearCookies: true,
+              //   clearCache: true,
+              //   debuggingEnabled: true,
+              //   initialChild: Container(
+              //     color: Colors.redAccent,
+              //     child: const Center(
+              //       child: Text('Waiting.....'),
+              //     ),
+              //   ),
+              //   userAgent:
+              //       'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36',
+              // ),
+            ),
           ),
         ),
       ),
     );
+  }
+
+  launchURL(String url) async {
+    if (await canLaunch(url)) {
+      await launch(url, forceWebView: true);
+    } else {
+      throw 'Could not launch $url';
+    }
   }
 
   //Shows Toast Without Context
@@ -118,26 +139,6 @@ class _MyWebViewState extends State<MyWebView> {
         timeInSecForIosWeb: 1,
         backgroundColor: Colors.grey,
         textColor: Colors.white,
-        fontSize: 16.0
-    );
+        fontSize: 16.0);
   }
 }
-// to use this import package webView
-// Widget webViewFlutter() {
-//   return WillPopScope(
-//       onWillPop: () {
-//         // var url = window.location.href;
-//         return Future.value(true);
-//       },
-//       child: Scaffold(
-//           body: SafeArea(
-//         child: WebView(
-//             initialUrl: widget.selectedUrl,
-//             javascriptMode: JavascriptMode.unrestricted,
-//             userAgent:
-//                 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/78.0.3904.97 Safari/537.36',
-//             onWebViewCreated: (WebViewController webViewController) {
-//               _controller.complete(webViewController);
-//             }),
-//       )));
-// }
