@@ -1,6 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+
+import '../../dbModel.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({
@@ -79,7 +82,7 @@ class _SettingScreenState extends State<SettingScreen> {
                   height: 20,
                 ),
                 Container(
-                  margin: EdgeInsets.symmetric(horizontal: 160),
+                  margin: EdgeInsets.symmetric(horizontal: 100),
                   child: FlatButton(
                     onPressed:() => Navigator.pop(context),
                     child: Text('Continue', style: TextStyle(
@@ -110,6 +113,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       ),
                       onPressed: () {
                         Navigator.pop(context);
+                        DefaultCacheManager().emptyCache();
                       },
                       elevation: 4.0,
                       minWidth: double.minPositive,
