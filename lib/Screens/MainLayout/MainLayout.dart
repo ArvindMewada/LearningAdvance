@@ -86,9 +86,6 @@ class _MainLayoutState extends State<MainLayout> {
       'country': 'India',
     }).then((value) async {
       dynamic data = await compute(jsonDecode, value.body);
-      print('**************');
-      print(data);
-
       store.dataStore.runInTransaction(TxMode.write, () {
         List<TestDataElement> dataNew = List.from(data['test_data'])
             .map((element) => TestDataElement(
@@ -128,7 +125,6 @@ class _MainLayoutState extends State<MainLayout> {
       'country': 'India',
     }).then((value) async {
       dynamic data = await compute(jsonDecode, value.body);
-      print('------------------------------');
       print(data);
       store.dataStore.runInTransaction(TxMode.write, () {
         List<ExamElement> dataNew = List.from(data['exams'])
@@ -161,7 +157,6 @@ class _MainLayoutState extends State<MainLayout> {
       'language': 'English',
     }).then((value) async {
       dynamic data = await compute(jsonDecode, value.body);
-      print('!!!!!!!!!!!!!!!!!!!!!!!!');
       print(data);
 
       store.dataStore.runInTransaction(TxMode.write, () {
@@ -186,15 +181,13 @@ class _MainLayoutState extends State<MainLayout> {
   }
 
   @override
-  void dispose() async {
-    // TODO: implement dispose
+  void dispose() {
     super.dispose();
     removeAllChachec();
   }
 
   @override
   void deactivate() {
-    // TODO: implement deactivate
     super.deactivate();
     removeAllChachec();
   }
@@ -242,11 +235,6 @@ class _MainLayoutState extends State<MainLayout> {
           break;
       }
     });
-    print(store.studentID);
-    print(store.studentHash);
-    print(store.studentData);
-    print(store.studentPermission);
-    print(store.emailID);
 
     getTestListContent(store.dataStore);
 

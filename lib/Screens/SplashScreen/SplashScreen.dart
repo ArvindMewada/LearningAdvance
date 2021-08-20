@@ -1,22 +1,22 @@
 import 'dart:async';
 import 'dart:convert';
+
 import 'package:elearning/MyStore.dart';
 import 'package:elearning/Screens/MainLayout/MainLayout.dart';
 import 'package:elearning/Screens/SplashScreen/SplashScreenConstants.dart';
 import 'package:elearning/Screens/Welcome/welcome_screen.dart';
 import 'package:elearning/constants.dart';
-import 'package:elearning/dbModel.dart';
 import 'package:elearning/schemas/clientDataSchema.dart';
 import 'package:elearning/schemas/studentDataSchema.dart';
 import 'package:elearning/schemas/studentPermissionSchema.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
-import 'package:velocity_x/velocity_x.dart';
-import '../ExploreScreen/ExploreScreen.dart';
-import 'package:lottie/lottie.dart';
 import 'package:http/http.dart' as http;
+import 'package:lottie/lottie.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:velocity_x/velocity_x.dart';
+
+import '../ExploreScreen/ExploreScreen.dart';
 
 class SplashScreen extends StatefulWidget {
   @override
@@ -58,9 +58,8 @@ class _SplashScreenState extends State<SplashScreen>
   }
 
   initLogin(SharedPreferences prefs) async {
-
     //Check weather the user is already logged in or is logging for the first time
-    if (prefs.getBool('isAuth') == true  && prefs.getString('email')!=null) {
+    if (prefs.getBool('isAuth') == true && prefs.getString('email') != null) {
       // await http.post(Uri.parse(studentDetailsAPI_URL), body: {
       //   'app_id': appID,
       //   'hash': app_hash,
@@ -118,15 +117,12 @@ class _SplashScreenState extends State<SplashScreen>
       //   }
       // });
       print(prefs.getString('email'));
-      await http.post(
-          Uri.parse(appCheckEmail_URL),
-          body: {
-            'hash': app_hash,
-            'email': prefs.getString('email'),
-            'app_id': appID
-          }).then((response) async {
-        dynamic data = await compute(
-            jsonDecode, response.body);
+      await http.post(Uri.parse(appCheckEmail_URL), body: {
+        'hash': app_hash,
+        'email': prefs.getString('email'),
+        'app_id': appID
+      }).then((response) async {
+        dynamic data = await compute(jsonDecode, response.body);
         print(data);
 
         //if user exist
@@ -136,50 +132,33 @@ class _SplashScreenState extends State<SplashScreen>
           store.studentID = store.studentData.userId!;
 
           //Gets the permission of the user
-          await http.post(
-              Uri.parse(studentPermissionAPI_URL),
-              body: {
-                'app_hash': app_hash,
-                'user_hash': store.studentHash,
-                'user_id': store.studentID
-              }).then((userPermission) async {
+          await http.post(Uri.parse(studentPermissionAPI_URL), body: {
+            'app_hash': app_hash,
+            'user_hash': store.studentHash,
+            'user_id': store.studentID
+          }).then((userPermission) async {
             print(userPermission);
-            if (userPermission.statusCode !=
-                200) {
-              // SVProgressHUD.dismiss();
-              showCustomSnackBar(context,
-                  'Error connecting to server');
+            if (userPermission.statusCode != 200) {
+              showCustomSnackBar(context, 'Error connecting to server');
             } else {
-              dynamic data = await compute(
-                  jsonDecode,
-                  userPermission.body);
+              dynamic data = await compute(jsonDecode, userPermission.body);
               print(data);
               if (data['flag'] != 1) {
-                // SVProgressHUD.dismiss();
                 showCustomSnackBar(context,
                     'User not granted permission to use this application');
-                Navigator.pushReplacement(
-                    context, MaterialPageRoute(builder: (context) => WelcomeScreen()));
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => WelcomeScreen()));
               } else {
-                store.studentPermission =
-                    StudentPermission.fromJson(
-                        data);
+                store.studentPermission = StudentPermission.fromJson(data);
                 print(store.studentPermission);
-                SharedPreferences prefs =
-                await SharedPreferences
-                    .getInstance();
+                SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.setBool('isAuth', true);
-                prefs.setString(
-                    'loginType', 'normal');
-                // SVProgressHUD.dismiss();
-
+                prefs.setString('loginType', 'normal');
                 //user logged in to main page
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(
-                      builder: (context) =>
-                          MainLayout()),
-                      (route) => false,
+                  MaterialPageRoute(builder: (context) => MainLayout()),
+                  (route) => false,
                 );
               }
             }
@@ -200,46 +179,6 @@ class _SplashScreenState extends State<SplashScreen>
     super.initState();
     controller = AnimationController(vsync: this);
     getAppConfig();
-  }
-
-  @override
-  void dispose() {
-    controller.dispose();
-    removeAllChachec();
-    super.dispose();
-  }
-
-  @override
-  void deactivate() {
-    // TODO: implement deactivate
-    super.deactivate();
-    removeAllChachec();
-  }
-
-  void removeAllChachec() async {
-    final MyStore store = VxState.store;
-    SharedPreferences prefs =
-    await SharedPreferences.getInstance();
-    prefs.clear();
-    store.dataStore.box<Post>().removeAll();
-    store.dataStore
-        .box<TestDataElement>()
-        .removeAll();
-    store.dataStore
-        .box<ExamElement>()
-        .removeAll();
-    store.dataStore
-        .box<TestReadingElement>()
-        .removeAll();
-    store.dataStore
-        .box<FLTExamElement>()
-        .removeAll();
-    store.dataStore
-        .box<GroupElement>()
-        .removeAll();
-    store.dataStore
-        .box<BookmarkElement>()
-        .removeAll();
   }
 
   @override

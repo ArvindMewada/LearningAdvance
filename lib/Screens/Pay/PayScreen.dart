@@ -151,9 +151,9 @@ class _PayScreenState extends State<PayScreen> {
       'app_id': appID,
       'app_hash': app_hash,
     }).then((value) async {
-      dynamic recievedData = await compute(jsonDecode, value.body);
-      if (recievedData['flag'] == 1) {
-        data = PaymentHistory.fromJson(recievedData);
+      dynamic receivedData = await compute(jsonDecode, value.body);
+      if (receivedData['flag'] == 1) {
+        data = PaymentHistory.fromJson(receivedData);
       }
     });
     return data;
@@ -166,74 +166,78 @@ class _PayScreenState extends State<PayScreen> {
         appBar: AppBar(
           title: Text('Pay'),
         ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: RoundedInputField(
-                        icon: Icons.payment,
-                        color: Colors.grey.shade200,
-                        keyboardType: TextInputType.number,
-                        hintText: 'Amount',
-                        controller: _controller),
-                  ),
-                  SizedBox(
-                    width: 10,
-                  ),
-                  TextButton(
-                    style: TextButton.styleFrom(
-                        padding: EdgeInsets.all(20),
-                        shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(20)),
-                        backgroundColor: kPrimaryColor,
-                        primary: Colors.white),
-                    onPressed: () {
-                      if (_controller.text.length == 0) {
-                        print('Enter amount greater than 0.');
-                        Fluttertoast.showToast(msg: "Please enter amount");
-                      } else {
-                        double amount = double.parse(_controller.text);
-                        if (amount <= 0) {
-                          print('Enter amount greater than 0.');
+        body: Container(
+          height: MediaQuery.of(context).size.height,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: RoundedInputField(
+                          icon: Icons.payment,
+                          color: Colors.grey.shade200,
+                          keyboardType: TextInputType.number,
+                          hintText: 'Amount',
+                          controller: _controller),
+                    ),
+                    SizedBox(
+                      width: 10,
+                    ),
+                    TextButton(
+                      style: TextButton.styleFrom(
+                          padding: EdgeInsets.all(20),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(20)),
+                          backgroundColor: kPrimaryColor,
+                          primary: Colors.white),
+                      onPressed: () {
+                        if (_controller.text.length == 0) {
                           Fluttertoast.showToast(msg: "Please enter amount");
                         } else {
-                          openCheckout(amount);
+                          double amount = double.parse(_controller.text);
+                          if (amount <= 0) {
+                            Fluttertoast.showToast(msg: "Please enter amount greater than 0");
+                          } else {
+                            openCheckout(amount);
+                          }
                         }
-                      }
-                    },
-                    child: Text('Pay'),
-                  )
-                ],
+                      },
+                      child: Text('Pay'),
+                    )
+                  ],
+                ),
               ),
-            ),
-            isLoading
-                ? Expanded(child: Center(child: CircularProgressIndicator()))
-                : Expanded(
-              flex: 1,
-              child: FutureBuilder(
-                  future: getPaymentHistory(),
-                  builder: (context, AsyncSnapshot<PaymentHistory> snapshot) {
-                    if (snapshot.hasData) if (snapshot.data!.response!.isEmpty)
-                      return Center(child: Text('No Payment History'));
-                    else
-                      return ListView.builder(
-                          itemCount: snapshot.data!.response!.length,
-                          itemBuilder: (context, index) {
-                            return ListTile(
-                              title: Text('₹ ' +
-                                  snapshot.data!.response![index].amount!),
-                              subtitle: Text(snapshot
-                                  .data!.response![index].createdOn!
-                                  .substring(0, 16)),
-                            );
-                          });
-                    return Center(child: CircularProgressIndicator());
-                  }),
-            ),
-          ],
+              isLoading
+                  ? Center(child: CircularProgressIndicator())
+                  : Expanded(
+                      flex: 2,
+                      child: FutureBuilder(
+                          future: getPaymentHistory(),
+                          builder:
+                              (context, AsyncSnapshot<PaymentHistory> snapshot) {
+                            if (snapshot.hasData) if (snapshot
+                                .data!.response!.isEmpty)
+                              return Center(child: Text('No Payment History'));
+                            else
+                              return ListView.builder(
+                                  itemCount: snapshot.data!.response!.length,
+                                  itemBuilder: (context, index) {
+                                    return ListTile(
+                                      title: Text('₹ ' +
+                                          snapshot
+                                              .data!.response![index].amount!),
+                                      subtitle: Text(snapshot
+                                          .data!.response![index].createdOn!
+                                          .substring(0, 16)),
+                                    );
+                                  });
+                            return Center(child: CircularProgressIndicator());
+                          }),
+                    ),
+            ],
+          ),
         ),
       ),
     );

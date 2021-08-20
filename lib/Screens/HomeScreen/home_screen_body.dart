@@ -53,9 +53,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
 
       List<HomeElements> tempDataNew = store.clientData.homeElements!;
       List tempDataCheck = tempDataNew.map((e) => jsonEncode(e)).toList();
-      print(tempDataNew);
-      print('\n\n');
-      print(tempData);
       tempData.forEach((element) {
         String elementOld = jsonEncode(element);
         if (tempDataCheck.contains(elementOld)) {
@@ -64,13 +61,10 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
           tempDataCheck.removeWhere((elementNew) => elementNew == elementOld);
         }
       });
-      print(tempDataCheck);
-
       if (tempDataCheck.length != 0) {
         tempData += tempDataCheck
             .map((e) => HomeElements.fromJson(jsonDecode(e)))
             .toList();
-
         prefs.setStringList(
             'homelist', tempData.map((e) => jsonEncode(e)).toList());
       }
@@ -395,8 +389,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                     onTap: () {
                       StoreRedirect.redirect(
                           androidAppId:
-                              "https://play.google.com/store/apps/details?id=com.whatsapp",
-                          iOSAppId: "585027354");
+                              "com.example.elearning",
+                          iOSAppId: "284882215");
                     },
                     leading: Icon(Icons.rate_review),
                     title: Text('Rate the App'),

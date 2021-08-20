@@ -1,20 +1,19 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
+
 import 'package:elearning/MyStore.dart';
-import 'package:elearning/schemas/liveClassSchema.dart';
 import 'package:elearning/constants.dart';
+import 'package:elearning/schemas/liveClassSchema.dart';
 import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter/material.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:velocity_x/velocity_x.dart';
 import 'package:webview_flutter/webview_flutter.dart';
-
 
 class LiveClassesScreen extends StatefulWidget {
   const LiveClassesScreen({Key? key}) : super(key: key);
@@ -25,8 +24,8 @@ class LiveClassesScreen extends StatefulWidget {
 
 class _LiveClassesScreenState extends State<LiveClassesScreen>
     with KeepAliveParentDataMixin {
-
   MyStore store = VxState.store;
+
   //Api call for getting data of past classes
   Future<LiveClassScheme> fetchUpcomingClasses() async {
     try {
@@ -139,7 +138,6 @@ class _LiveClassesScreenState extends State<LiveClassesScreen>
       ),
     );
   }
-
   @override
   void detach() {}
 
@@ -151,6 +149,7 @@ class _LiveClassesScreenState extends State<LiveClassesScreen>
 class LiveClassCard extends StatefulWidget {
   final LiveClass data;
   final int tabNumber;
+
   const LiveClassCard({required this.data, Key? key, required this.tabNumber})
       : super(key: key);
 
@@ -159,16 +158,7 @@ class LiveClassCard extends StatefulWidget {
 }
 
 class _LiveClassCardState extends State<LiveClassCard> {
-  bool isMicPermission = false;
-  void permissionCheck() async {
-    await [
-      Permission.microphone,
-      Permission.camera,
-    ].request();
-   if(await Permission.microphone.status.isGranted){
-     permissionGranted();
-   }
-  }
+
   MyStore store = VxState.store;
   late final flutterWebViewPlugin;
   GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -179,32 +169,24 @@ class _LiveClassCardState extends State<LiveClassCard> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
     flutterWebViewPlugin = new FlutterWebviewPlugin();
-    // //Url Change Listener
-    // _onUrlChanged = flutterWebViewPlugin.onUrlChanged.listen((String url) {
-    //   if (mounted) {
-    //     //function is triggered when Url is changed
-    //     print("Current url changed to : $url");
-    //     currentUrl = url;
-    //     //To automatically logout the user on logging out
-    //     if (currentUrl == adminLoginScreenUrl) {
-    //       Navigator.pop(context);
-    //       Fluttertoast.showToast(msg: 'You have been Successfully Logged Out');
-    //     }
-    //   }
-    // });
+    //Url Change Listener
+    _onUrlChanged = flutterWebViewPlugin.onUrlChanged.listen((String url) {
+      if (mounted) {
+        setState(() {
+          currentUrl = url;
+          //To automatically logout the user on logging out
+          if (currentUrl == adminLoginScreenUrl) {
+            Navigator.pop(context);
+            Fluttertoast.showToast(
+                msg: 'You have been Successfully Logged Out');
+          }
+        });
+      }
+    });
   }
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-    _onUrlChanged.cancel();
-    flutterWebViewPlugin.dispose();
-  }
-
 
   @override
   Widget build(BuildContext context) {
@@ -243,7 +225,6 @@ class _LiveClassCardState extends State<LiveClassCard> {
               ),
             ],
           ),
-
           // time of the test
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -285,19 +266,18 @@ class _LiveClassCardState extends State<LiveClassCard> {
             children: <Widget>[
               TextButton(
                   style: ButtonStyle(
-                    backgroundColor: MaterialStateProperty.all((widget.tabNumber == 0)
-                        ? (isClassStarted(widget.data.startTime!)
-                            ? Colors.blue[900]
-                            : Colors.grey[500])
-                        : widget.data.recordedLink.isEmptyOrNull
-                            ? Colors.grey[500]
-                            : Colors.blue[900]),
+                    backgroundColor: MaterialStateProperty.all(
+                        (widget.tabNumber == 0)
+                            ? (_isClassStarted(widget.data.startTime!)
+                                ? Colors.blue[900]
+                                : Colors.grey[500])
+                            : widget.data.recordedLink.isEmptyOrNull
+                                ? Colors.grey[500]
+                                : Colors.blue[900]),
                   ),
-
-                  // tabNumber 0:LiveClass Tab, 1:Past Class Tab
                   child: Text(
                     (widget.tabNumber == 0)
-                        ? isClassStarted(widget.data.startTime!)
+                        ? _isClassStarted(widget.data.startTime!)
                             ? 'Join'
                             : 'Scheduled'
                         : widget.data.recordedLink.isEmptyOrNull
@@ -309,9 +289,11 @@ class _LiveClassCardState extends State<LiveClassCard> {
                     ),
                   ),
                   onPressed: () {
-                    if ((widget.tabNumber == 1 && !widget.data.recordedLink.isEmptyOrNull) ||
-                        (widget.tabNumber == 0 && isClassStarted(widget.data.startTime!))) {
-                      permissionCheck();
+                    if ((widget.tabNumber == 1 &&
+                            !widget.data.recordedLink.isEmptyOrNull) ||
+                        (widget.tabNumber == 0 &&
+                            _isClassStarted(widget.data.startTime!))) {
+                      _openWebBrowser(widget.data.url!);
                     }
                   }),
               const SizedBox(width: 8),
@@ -322,23 +304,33 @@ class _LiveClassCardState extends State<LiveClassCard> {
     );
   }
 
-  void permissionGranted() async {
-    String url = widget.data.url!;
-    if(await Permission.microphone.isGranted){
+  @override
+  void dispose() {
+    super.dispose();
+    _onUrlChanged.cancel();
+    flutterWebViewPlugin.dispose();
+  }
+
+  void _openWebBrowser(String url) async {
+    if (url.isNotEmpty) {
       if (await canLaunch(url)) {
-        await launch(url, enableJavaScript: true, webOnlyWindowName: "https//google.in");
+        await launch(
+          url,
+          enableJavaScript: true,
+          webOnlyWindowName: "https//google.in",
+        );
       } else {
         throw 'Could not launch $url';
       }
     }
   }
-  bool isClassStarted(String classStartTime) {
+
+  bool _isClassStarted(String classStartTime) {
     int a = int.parse(classStartTime.substring(0, 2));
     int b = classStartTime.substring(6) == 'pm' ? 12 : 0;
     int c = int.parse(classStartTime.substring(3, 5));
     int timeOfClass = (a + b) * 60 + c;
     int currentTime = DateTime.now().hour * 60 + DateTime.now().minute;
-    return currentTime > timeOfClass-15;
-    //class starts 15 min early
+    return currentTime > timeOfClass - 15;
   }
 }

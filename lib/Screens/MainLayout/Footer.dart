@@ -8,15 +8,16 @@ class Footer extends StatelessWidget {
 
   // url launch in browser for terms of service or privacy policy
   Future<void> _launchInBrowser(String url) async {
-    if (await canLaunch(url)) {
-      await launch(
-        url,
-        forceSafariVC: true,
-        forceWebView: true,
-        headers: <String, String>{'my_header_key': 'my_header_value'},
-      );
-    } else {
-      throw 'Could not launch $url';
+    if (url.isNotEmpty) {
+      if (await canLaunch(url)) {
+        await launch(
+          url,
+          enableJavaScript: true,
+          webOnlyWindowName: "https//google.in",
+        );
+      } else {
+        throw 'Could not launch $url';
+      }
     }
   }
 
