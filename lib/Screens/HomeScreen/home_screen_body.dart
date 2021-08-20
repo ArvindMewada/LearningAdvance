@@ -1,10 +1,12 @@
 import 'dart:convert';
+
 import 'package:elearning/MyStore.dart';
 import 'package:elearning/Screens/AboutUsPage/aboutUsPage.dart';
 import 'package:elearning/Screens/DiscussScreen/CommunityPage.dart';
 import 'package:elearning/Screens/ExamScreen/ExamScreen.dart';
 import 'package:elearning/Screens/FullLengthTestScreen/FullLengthTestScreen.dart';
 import 'package:elearning/Screens/HomeScreen/BookmarkScreen.dart';
+import 'package:elearning/Screens/InstituteBatchManagementScreen/InstituteBatchManagement.dart';
 import 'package:elearning/Screens/InstituteNotificationPage/instituteNotiPage.dart';
 import 'package:elearning/Screens/KnowledgeZoneScreen/KnowledgeZoneScreen.dart';
 import 'package:elearning/Screens/LiveClassesScreen/LiveClassesScreen.dart';
@@ -15,17 +17,15 @@ import 'package:elearning/Screens/ProfileScreen/ProfileScreen.dart';
 import 'package:elearning/Screens/QuizScreen/QuizScreen.dart';
 import 'package:elearning/Screens/Setting/Setting.dart';
 import 'package:elearning/Screens/StudyZoneScreen/StudyZoneScreen.dart';
-import 'package:elearning/Screens/InstituteBatchManagementScreen/InstituteBatchManagement.dart';
 import 'package:elearning/components/nothingToShow.dart';
 import 'package:elearning/constants.dart';
 import 'package:elearning/modules/CurrentAffairsPage.dart';
 import 'package:elearning/schemas/clientDataSchema.dart';
 import 'package:elearning/utils/const.dart';
 import 'package:flutter/material.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
-import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:reorderables/reorderables.dart';
+import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -42,58 +42,46 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   late bool isDone;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  // List tempdata = [
-  //   {'home_element_id': '225', 'title_1': 'Exams'},
-  //   {'home_element_id': '226', 'title_1': 'Quiz'},
-  //   {'home_element_id': '331', 'title_1': 'Full Length Test'},
-  //   {'home_element_id': '229', 'title_1': 'Knowledge Zone'},
-  //   {'home_element_id': '456', 'title_1': 'Current Affair'},
-  //   {'home_element_id': '467', 'title_1': 'Lie Classes'}
-  // ];
   initialise() async {
     prefs = await SharedPreferences.getInstance();
     List<String> permissions = store.studentPermission.studentPermissions!;
     if (prefs.containsKey('homelist')) {
-      print('if');
       List data =
           prefs.getStringList('homelist')!.map((e) => jsonDecode(e)).toList();
-      List<HomeElements> tempdata =
+      List<HomeElements> tempData =
           data.map((e) => HomeElements.fromJson(e)).toList();
 
-      List<HomeElements> tempdataNew = store.clientData.homeElements!;
-      List tempDataCheck = tempdataNew.map((e) => jsonEncode(e)).toList();
-      print('^^^^^^^^^^^^^^^^^^^^^^^^');
-      print(tempdataNew);
+      List<HomeElements> tempDataNew = store.clientData.homeElements!;
+      List tempDataCheck = tempDataNew.map((e) => jsonEncode(e)).toList();
+      print(tempDataNew);
       print('\n\n');
-      print(tempdata);
-      tempdata.forEach((element) {
+      print(tempData);
+      tempData.forEach((element) {
         String elementOld = jsonEncode(element);
         if (tempDataCheck.contains(elementOld)) {
-          print('#################################');
           print(elementOld);
 
           tempDataCheck.removeWhere((elementNew) => elementNew == elementOld);
         }
       });
-      print('ffffffffffffffffffffffff');
       print(tempDataCheck);
 
       if (tempDataCheck.length != 0) {
-        tempdata += tempDataCheck
+        tempData += tempDataCheck
             .map((e) => HomeElements.fromJson(jsonDecode(e)))
             .toList();
 
         prefs.setStringList(
-            'homelist', tempdata.map((e) => jsonEncode(e)).toList());
+            'homelist', tempData.map((e) => jsonEncode(e)).toList());
       }
-      getCards(tempdata, permissions);
+      getCards(tempData, permissions);
     } else {
       print('else');
-      List<HomeElements> tempdata = store.clientData.homeElements!;
-      print(tempdata);
-      getCards(tempdata, permissions);
+      List<HomeElements> tempData = store.clientData.homeElements!;
+      print(tempData);
+      getCards(tempData, permissions);
       prefs.setStringList(
-          'homelist', tempdata.map((e) => jsonEncode(e)).toList());
+          'homelist', tempData.map((e) => jsonEncode(e)).toList());
     }
     setState(() {
       isDone = true;
@@ -133,8 +121,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
     }));
   }
 
-  getCards(List<HomeElements> tempdata, List<String> permissions) {
-    tempdata.forEach((element) {
+  getCards(List<HomeElements> tempData, List<String> permissions) {
+    tempData.forEach((element) {
       _tiles.add(IconData(
           color: (permissions.contains(element.homeElementId))
               ? Colors.yellow.shade100
@@ -190,7 +178,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
 
   @override
   void dispose() {
-    // TODO: implement dispose
     super.dispose();
     prefs.clear();
   }
@@ -201,12 +188,10 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
       setState(() {
         IconData row = _tiles.removeAt(oldIndex);
         List<String> tempPref = prefs.getStringList('homelist')!;
-
         dynamic temp = tempPref.removeAt(oldIndex);
         tempPref.insert(newIndex, temp);
         prefs.setStringList('homelist', tempPref);
         _tiles.insert(newIndex, row);
-        print('@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@');
       });
     }
 
@@ -220,7 +205,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
           return Colors.lightGreenAccent.shade100;
         case 3:
           return Colors.tealAccent;
-
         default:
       }
     }
@@ -354,7 +338,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
       ],
     );
 
-
     return Scaffold(
       key: _scaffoldKey,
       drawer: Drawer(
@@ -411,7 +394,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                     shape: listTileShape,
                     onTap: () {
                       StoreRedirect.redirect(
-                          androidAppId: "https://play.google.com/store/apps/details?id=com.whatsapp",
+                          androidAppId:
+                              "https://play.google.com/store/apps/details?id=com.whatsapp",
                           iOSAppId: "585027354");
                     },
                     leading: Icon(Icons.rate_review),

@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:elearning/MyStore.dart';
@@ -5,11 +6,13 @@ import 'package:elearning/schemas/liveClassSchema.dart';
 import 'package:elearning/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/rendering.dart';
+import 'package:flutter_webview_plugin/flutter_webview_plugin.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:elearning/utils/webview.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 
 
@@ -22,9 +25,8 @@ class LiveClassesScreen extends StatefulWidget {
 
 class _LiveClassesScreenState extends State<LiveClassesScreen>
     with KeepAliveParentDataMixin {
+
   MyStore store = VxState.store;
-
-
   //Api call for getting data of past classes
   Future<LiveClassScheme> fetchUpcomingClasses() async {
     try {
@@ -167,13 +169,43 @@ class _LiveClassCardState extends State<LiveClassCard> {
      permissionGranted();
    }
   }
+  MyStore store = VxState.store;
+  late final flutterWebViewPlugin;
+  GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
+  late StreamSubscription<String> _onUrlChanged;
+  late String currentUrl;
+  String callbackUrl = "Live_logout";
+  String adminLoginScreenUrl = 'https://adminpanel.learno.online/index.php';
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     if (Platform.isAndroid) WebView.platform = SurfaceAndroidWebView();
+    flutterWebViewPlugin = new FlutterWebviewPlugin();
+    // //Url Change Listener
+    // _onUrlChanged = flutterWebViewPlugin.onUrlChanged.listen((String url) {
+    //   if (mounted) {
+    //     //function is triggered when Url is changed
+    //     print("Current url changed to : $url");
+    //     currentUrl = url;
+    //     //To automatically logout the user on logging out
+    //     if (currentUrl == adminLoginScreenUrl) {
+    //       Navigator.pop(context);
+    //       Fluttertoast.showToast(msg: 'You have been Successfully Logged Out');
+    //     }
+    //   }
+    // });
   }
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    _onUrlChanged.cancel();
+    flutterWebViewPlugin.dispose();
+  }
+
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -280,13 +312,6 @@ class _LiveClassCardState extends State<LiveClassCard> {
                     if ((widget.tabNumber == 1 && !widget.data.recordedLink.isEmptyOrNull) ||
                         (widget.tabNumber == 0 && isClassStarted(widget.data.startTime!))) {
                       permissionCheck();
-
-                      //to disable click when recording is not available
-//                       window.navigator.getUserMedia(audio: true, video: true).then(() {
-// //code to execute after accessing
-//                         permissionCheck();
-//                       });
-
                     }
                   }),
               const SizedBox(width: 8),
@@ -298,14 +323,13 @@ class _LiveClassCardState extends State<LiveClassCard> {
   }
 
   void permissionGranted() async {
+    String url = widget.data.url!;
     if(await Permission.microphone.isGranted){
-      Navigator.of(context).push(MaterialPageRoute(
-          builder: (BuildContext context) => MyWebView(
-            selectedUrl: (widget.tabNumber == 0)
-                ? widget.data.url
-                : widget.data.recordedLink,
-            tabNo: widget.tabNumber,
-          )));
+      if (await canLaunch(url)) {
+        await launch(url, enableJavaScript: true, webOnlyWindowName: "https//google.in");
+      } else {
+        throw 'Could not launch $url';
+      }
     }
   }
   bool isClassStarted(String classStartTime) {
