@@ -4,6 +4,7 @@ import 'package:elearning/Screens/DiscussScreen/CommunityPostView.dart';
 import 'package:elearning/Screens/DiscussScreen/NewPostPage.dart';
 import 'package:elearning/dbModel.dart';
 import 'package:elearning/utils/LoadHTMLData.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:share/share.dart';
 import 'package:shimmer/shimmer.dart';
@@ -193,6 +194,7 @@ class _CommunityPostsPageState extends State<CommunityPostsPage> {
                         .substring(11, 13));
                     if (timePrefix >= 12) ampm = 'PM';
                     if (timePrefix > 12) timePrefix -= 12;
+                    int counter = snapshot.data!.posts![0].upvoteCount!;
 
                     return Padding(
                       padding: const EdgeInsets.all(8.0),
@@ -247,6 +249,7 @@ class _CommunityPostsPageState extends State<CommunityPostsPage> {
                                             .postDescription!,
                                         20),
                                     SizedBox(height: 10),
+
                                     snapshot.data!.posts![index].postImage == ''
                                         ? Container()
                                         : Image.network(
@@ -265,7 +268,37 @@ class _CommunityPostsPageState extends State<CommunityPostsPage> {
                                                     style: TextStyle(
                                                         color: Colors.black),
                                                   ),
-                                                  onPressed: ()=> Fluttertoast.showToast(msg: "like click"),
+                                                  onPressed: () async {
+                                                    SVProgressHUD
+                                                        .setRingThickness(5);
+                                                    SVProgressHUD.setRingRadius(
+                                                        5);
+                                                    SVProgressHUD
+                                                        .setDefaultMaskType(
+                                                        SVProgressHUDMaskType
+                                                            .black);
+                                                    SVProgressHUD.show();
+                                                    await incrementUpvotePost(
+                                                        snapshot.data!.posts![index].postId!);
+                                                    if (mounted) {
+                                                      setState(() {
+                                                        snapshot.data!.posts![index].upvoteCount  =
+                                                        (counter + 1);
+                                                        final box = store
+                                                            .dataStore
+                                                            .box<Post>();
+                                                        List<Post> temp =
+                                                        box.getAll();
+                                                        temp[index]
+                                                            .upvote_count =
+                                                            counter + 1;
+                                                        box.removeAll();
+                                                        box.putMany(temp);
+                                                      });
+                                                    }
+
+                                                    SVProgressHUD.dismiss();
+                                                  },
                                                   icon: Icon(
                                                     Icons.favorite_border,
                                                     color: Colors.black,
@@ -361,5 +394,14 @@ class _CommunityPostsPageState extends State<CommunityPostsPage> {
             );
           }),
     );
+  }
+  incrementUpvotePost(String postId) async {
+    MyStore store = VxState.store;
+    await http.post(Uri.parse(discussionPostUpvote_URL), body: {
+      'user_id': store.studentID,
+      'user_hash': store.studentHash,
+      'app_id': appID,
+      'post_id': postId,
+    });
   }
 }
