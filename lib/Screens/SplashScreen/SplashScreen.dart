@@ -9,6 +9,7 @@ import 'package:elearning/constants.dart';
 import 'package:elearning/schemas/clientDataSchema.dart';
 import 'package:elearning/schemas/studentDataSchema.dart';
 import 'package:elearning/schemas/studentPermissionSchema.dart';
+import 'package:elearning/utils/LoadAndDownload.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -154,6 +155,9 @@ class _SplashScreenState extends State<SplashScreen>
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.setBool('isAuth', true);
                 prefs.setString('loginType', 'normal');
+                getAppConfigMain(store.dataStore, context);
+                getTestListContent(store.dataStore);
+                getTestReadingElementList(store.dataStore);
                 //user logged in to main page
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -174,11 +178,36 @@ class _SplashScreenState extends State<SplashScreen>
           context, MaterialPageRoute(builder: (context) => ExploreScreen()));
   }
 
+  getAppVersionCode() async {
+    await http.post(Uri.parse(appFetchVersionCodeURL), body: {
+      'app_id': appID,
+      'app_hash': app_hash,
+    }).then((value) async {
+      dynamic data = await compute(jsonDecode, value.body);
+      var appVersion = data['version_code'];
+      int appVersionFetch = int.parse(appVersion);
+      int appVersionLocal = int.parse(version_code);
+      print("$appVersionFetch , $appVersionLocal");
+      if(appVersionLocal > appVersionFetch){
+        print("require version lower ");
+      }
+    });
+  }
+
   @override
   void initState() {
     super.initState();
     controller = AnimationController(vsync: this);
     getAppConfig();
+    getAppVersionCode();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    controller.dispose();
+    removeAllCache();
   }
 
   @override

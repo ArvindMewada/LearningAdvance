@@ -7,6 +7,7 @@ import 'package:elearning/dbModel.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class FullLengthTestScreen extends StatefulWidget {
@@ -19,9 +20,10 @@ class FullLengthTestScreen extends StatefulWidget {
 class _FullLengthTestScreenState extends State<FullLengthTestScreen> {
   late BehaviorSubject<List<FLTExamElement>> _stream;
   MyStore store = VxState.store;
+  late SharedPreferences _sharedPreferences;
   late bool isHindi = false;
   @override
-  void initState() {
+  void initState() async {
     if (mounted)
       setState(() {
         _stream = BehaviorSubject();
@@ -31,11 +33,19 @@ class _FullLengthTestScreenState extends State<FullLengthTestScreen> {
             .watch(triggerImmediately: true)
             .map((query) => query.find()));
       });
+    _sharedPreferences = await SharedPreferences.getInstance();
     super.initState();
   }
 
+  void isAccessAllow () async {
+    final isPermission = _sharedPreferences.getString("access_allow");
+    if(isPermission != null && isPermission == "Yes") {
+      print("hey cong");
+    }
+  }
   @override
   Widget build(BuildContext context) {
+    isAccessAllow();
     return Scaffold(
       appBar: AppBar(
         title: Text('Full Length Test'),

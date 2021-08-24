@@ -21,6 +21,8 @@ import 'package:elearning/components/nothingToShow.dart';
 import 'package:elearning/constants.dart';
 import 'package:elearning/modules/CurrentAffairsPage.dart';
 import 'package:elearning/schemas/clientDataSchema.dart';
+import 'package:flutter/foundation.dart';
+import 'package:http/http.dart' as http;
 import 'package:elearning/utils/const.dart';
 import 'package:flutter/material.dart';
 import 'package:percent_indicator/circular_percent_indicator.dart';
@@ -29,6 +31,8 @@ import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'package:velocity_x/velocity_x.dart';
+
+import '../../objectbox.g.dart';
 
 class HomeScreenBody extends StatefulWidget {
   @override
@@ -82,8 +86,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
     });
   }
 
-  getFunction(String element) {
-    return Navigator.push(context, MaterialPageRoute(builder: (context) {
+  getFunction(String element) async {
+    return Navigator.push(context, MaterialPageRoute(builder: (context)  {
       switch (element) {
         case '230':
           return CommunityPage();
@@ -114,6 +118,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
       }
     }));
   }
+
 
   getCards(List<HomeElements> tempData, List<String> permissions) {
     tempData.forEach((element) {

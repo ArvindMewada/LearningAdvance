@@ -22,6 +22,8 @@ const String userRegPIN_URL =
     'https://mobile1.mycareerlift.com/index.php/app_verify_reg_pin_v0';
 const String userRegister_URL =
     'https://mobile1.mycareerlift.com/index.php/app_register_user_v0';
+const String appUserPermissionAccessURL =
+    'https://mobile1.mycareerlift.com/index.php/app_user_permission_access_v0';
 const String studyZoneContent_URL =
     'https://mobile1.mycareerlift.com/index.php/app_fetch_sz_data_v1';
 const String currentAffairsContent_URL =
@@ -48,6 +50,8 @@ const String testList_URL =
     'http://35.244.50.14/index.php/app_fetch_test_list_v0';
 const String appCheckVersion_URL =
     'https://mobile1.mycareerlift.com/index.php/App_check_version_v0';
+const String appFetchVersionCodeURL =
+    'https://mobile1.mycareerlift.com/index.php/app_fetch_version_code_v0';
 const String appFetchReading_URL =
     'https://mobile1.mycareerlift.com/index.php/app_fetch_reading_v1';
 const String getTestQuestions_URL =

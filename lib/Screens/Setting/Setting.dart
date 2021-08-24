@@ -1,8 +1,12 @@
 import 'dart:async';
 
+import 'package:elearning/utils/LoadAndDownload.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:path_provider/path_provider.dart';
+import 'package:velocity_x/velocity_x.dart';
 
+import '../../MyStore.dart';
 import '../../dbModel.dart';
 
 class SettingScreen extends StatefulWidget {
@@ -22,7 +26,9 @@ class _SettingScreenState extends State<SettingScreen> {
     // TODO: implement initState
     super.initState();
     animateButton();
+
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -114,6 +120,7 @@ class _SettingScreenState extends State<SettingScreen> {
                       onPressed: () {
                         Navigator.pop(context);
                         DefaultCacheManager().emptyCache();
+                        _deleteCacheDir();
                       },
                       elevation: 4.0,
                       minWidth: double.minPositive,
@@ -125,6 +132,15 @@ class _SettingScreenState extends State<SettingScreen> {
               ],
             )));
   }
+
+  Future<void> _deleteCacheDir() async {
+    final cacheDir = await getTemporaryDirectory();
+    if (cacheDir.existsSync()) {
+      cacheDir.deleteSync(recursive: true);
+    }
+  }
+
+
 
   Widget setUpButtonChild() {
     if (!_isLoading) {
@@ -151,6 +167,10 @@ class _SettingScreenState extends State<SettingScreen> {
       setState(() {
         if (_isLoading) {
           _isLoading = false;
+          final MyStore store = VxState.store;
+         getTestListContent(store.dataStore);
+         getAppConfigMain(store.dataStore, context);
+         getTestReadingElementList(store.dataStore);
         }
       });
     });

@@ -1,19 +1,20 @@
 import 'dart:convert';
+
+import 'package:circular_countdown_timer/circular_countdown_timer.dart';
+import 'package:elearning/MyStore.dart';
 import 'package:elearning/Screens/ExamScreen/ExamCompleted.dart';
 import 'package:elearning/Screens/MainLayout/AlertDialog.dart';
+import 'package:elearning/constants.dart';
 import 'package:elearning/dbModel.dart';
 import 'package:elearning/modules/TestResultScreen.dart';
 import 'package:elearning/schemas/examResultSchema.dart';
-import 'package:flutter/rendering.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
-import 'package:html/parser.dart' as htmlparser;
-import 'package:elearning/MyStore.dart';
-import 'package:circular_countdown_timer/circular_countdown_timer.dart';
-import 'package:elearning/constants.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
+import 'package:html/parser.dart' as htmlparser;
 import 'package:http/http.dart' as http;
 import 'package:velocity_x/velocity_x.dart';
 
@@ -186,65 +187,74 @@ class _ExamTestScreenState extends State<ExamTestScreen>
                 : Text(''),
             (isDone)
                 ? (((initPos + 1) > (data.length)))
-                    ? FloatingActionButton(
-                        heroTag: null,
-                        mini: true,
-                        onPressed: () async {
-                          countDownController.pause();
-                          SVProgressHUD.setRingThickness(5);
-                          SVProgressHUD.setRingRadius(5);
-                          SVProgressHUD.setDefaultMaskType(
-                              SVProgressHUDMaskType.black);
-                          SVProgressHUD.show();
-                          List responsesNew = [];
-                          responses.forEach((element) {
-                            if ((element) == '')
-                              responsesNew.add(0);
-                            else
-                              responsesNew.add(element);
-                          });
-                          List ques_stringList = [];
-                          for (int i = 0; i < responsesNew.length; i++) {
-                            ques_stringList.add(
-                                '${data[i]['ques_id']}#${responsesNew[i]}');
-                          }
-                          await http.post(Uri.parse(postTestResultDetails_URL),
-                              body: {
-                                'user_id': store.studentID,
-                                'user_hash': store.studentHash,
-                                'test_hash': widget.test_hash,
-                                'positive_mark': widget.positive_marks,
-                                'negative_mark': widget.negative_marks,
-                                'ques_string': ques_stringList.join('|'),
-                                'rgcmid': '',
-                              }).then((value) async {
-                            dynamic recievedData =
-                                await compute(jsonDecode, value.body);
-                            if (recievedData['flag'] != 1) {
-                              SVProgressHUD.dismiss();
-                              showCustomSnackBar(context,
-                                  'Error Submitting Result. Please try again.');
-                              countDownController.resume();
-                            } else {
-                              ExamResult examResult =
-                                  ExamResult.fromJson(recievedData);
-                              final box =
-                                  store.dataStore.box<TestDataElement>();
-                              TestDataElement _testDataElement =
-                                  box.get(widget.id)!;
-                              _testDataElement.is_attempted = 1;
-                              box.putAsync(_testDataElement);
-                              SVProgressHUD.dismiss();
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (context) => ExamCompleted(
-                                          examResult: examResult,
-                                          test_hash: widget.test_hash)));
+                    ? Container(
+              margin: EdgeInsets.symmetric(vertical: 12),
+                      child: TextButton(
+                          style: TextButton.styleFrom(
+                              elevation: 8,
+                              backgroundColor: kPrimaryColor,
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8))),
+                          onPressed: () async {
+                            countDownController.pause();
+                            SVProgressHUD.setRingThickness(5);
+                            SVProgressHUD.setRingRadius(5);
+                            SVProgressHUD.setDefaultMaskType(
+                                SVProgressHUDMaskType.black);
+                            SVProgressHUD.show();
+                            List responsesNew = [];
+                            responses.forEach((element) {
+                              if ((element) == '')
+                                responsesNew.add(0);
+                              else
+                                responsesNew.add(element);
+                            });
+                            List ques_stringList = [];
+                            for (int i = 0; i < responsesNew.length; i++) {
+                              ques_stringList.add(
+                                  '${data[i]['ques_id']}#${responsesNew[i]}');
                             }
-                          });
-                        },
-                        child: Icon(Icons.check))
+                            await http.post(Uri.parse(postTestResultDetails_URL),
+                                body: {
+                                  'user_id': store.studentID,
+                                  'user_hash': store.studentHash,
+                                  'test_hash': widget.test_hash,
+                                  'positive_mark': widget.positive_marks,
+                                  'negative_mark': widget.negative_marks,
+                                  'ques_string': ques_stringList.join('|'),
+                                  'rgcmid': '',
+                                }).then((value) async {
+                              dynamic recievedData =
+                                  await compute(jsonDecode, value.body);
+                              if (recievedData['flag'] != 1) {
+                                SVProgressHUD.dismiss();
+                                showCustomSnackBar(context,
+                                    'Error Submitting Result. Please try again.');
+                                countDownController.resume();
+                              } else {
+                                ExamResult examResult =
+                                    ExamResult.fromJson(recievedData);
+                                final box =
+                                    store.dataStore.box<TestDataElement>();
+                                TestDataElement _testDataElement =
+                                    box.get(widget.id)!;
+                                _testDataElement.is_attempted = 1;
+                                box.putAsync(_testDataElement);
+                                SVProgressHUD.dismiss();
+                                Navigator.pushReplacement(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ExamCompleted(
+                                            examResult: examResult,
+                                            test_hash: widget.test_hash)));
+                              }
+                            });
+                          },
+                          child: Text(
+                            'Submit Test',
+                            style: TextStyle(color: Colors.white),
+                          )),
+                    )
                     : FloatingActionButton(
                         mini: true,
                         heroTag: null,
