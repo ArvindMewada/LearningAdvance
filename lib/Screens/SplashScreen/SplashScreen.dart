@@ -140,6 +140,7 @@ class _SplashScreenState extends State<SplashScreen>
           }).then((userPermission) async {
             print(userPermission);
             if (userPermission.statusCode != 200) {
+              print("Error connecting to server");
               showCustomSnackBar(context, 'Error connecting to server');
             } else {
               dynamic data = await compute(jsonDecode, userPermission.body);
@@ -155,9 +156,11 @@ class _SplashScreenState extends State<SplashScreen>
                 SharedPreferences prefs = await SharedPreferences.getInstance();
                 prefs.setBool('isAuth', true);
                 prefs.setString('loginType', 'normal');
+
                 getAppConfigMain(store.dataStore, context);
                 getTestListContent(store.dataStore);
                 getTestReadingElementList(store.dataStore);
+
                 //user logged in to main page
                 Navigator.pushAndRemoveUntil(
                   context,
@@ -189,7 +192,7 @@ class _SplashScreenState extends State<SplashScreen>
       int appVersionLocal = int.parse(version_code);
       print("$appVersionFetch , $appVersionLocal");
       if(appVersionLocal > appVersionFetch){
-        print("require version lower ");
+        print("your application version is low please update your application");
       }
     });
   }
@@ -200,6 +203,7 @@ class _SplashScreenState extends State<SplashScreen>
     controller = AnimationController(vsync: this);
     getAppConfig();
     getAppVersionCode();
+
   }
 
   @override
@@ -207,7 +211,6 @@ class _SplashScreenState extends State<SplashScreen>
     // TODO: implement dispose
     super.dispose();
     controller.dispose();
-    removeAllCache();
   }
 
   @override

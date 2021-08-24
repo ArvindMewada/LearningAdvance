@@ -11,87 +11,89 @@ const String app_hash = '72475c87f984f0435e9e5000ded88ff';
 const String version_code = '85';
 const String is_secure = '0';
 const String razorPay_testKey = 'rzp_test_X2PgDf0pdphUNu';
-
+const String test_base_url = "https://mobile1.mycareerlift.com/index.php";
 const String clientAPI_URL =
-    'https://mobile1.mycareerlift.com/index.php/Get_app_config_v0';
+    '$test_base_url/Get_app_config_v0';
 const String studentDetailsAPI_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_mob_login_v0';
+    '$test_base_url/app_mob_login_v0';
 const String studentPermissionAPI_URL =
-    'http://json.mycareerlift.com/api/index.php/App_student_config_v0';
+    '$test_base_url/App_student_config_v0';
 const String userRegPIN_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_verify_reg_pin_v0';
+    '$test_base_url/app_verify_reg_pin_v0';
 const String userRegister_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_register_user_v0';
+    '$test_base_url/app_register_user_v0';
 const String appUserPermissionAccessURL =
-    'https://mobile1.mycareerlift.com/index.php/app_user_permission_access_v0';
+    '$test_base_url/app_user_permission_access_v0';
 const String studyZoneContent_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_fetch_sz_data_v1';
+    '$test_base_url/app_fetch_sz_data_v1';
 const String currentAffairsContent_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_fetch_current_affairs_v0';
+    '$test_base_url/app_fetch_current_affairs_v0';
+const String appResetUserURL =
+    '$test_base_url/app_reset_user_sync_v0';
 const String discussGroupsList_URL =
-    'http://mobile1.mycareerlift.com/index.php/app_fetch_group_list_v0';
+    '$test_base_url/app_fetch_group_list_v0';
 const String discussPostList_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_fetch_post_list_v1';
+    '$test_base_url/app_fetch_post_list_v1';
 const String discussPostCommentList_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_fetch_edu_comments_v0';
+    '$test_base_url/app_fetch_edu_comments_v0';
 const String discussPostAddComment_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_edu_add_post_comment_v0';
+    '$test_base_url/app_edu_add_post_comment_v0';
 const String discussionPostUpvote_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_edu_post_upvote_v0';
+    '$test_base_url/app_edu_post_upvote_v0';
 const String communityAboutPage_URL =
-    'http://mobile1.mycareerlift.com/index.php/app_edu_community_about_v0';
+    '$test_base_url/app_edu_community_about_v0';
 
 const String knowledgeZonePreReading_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_all_list_data_v0';
+    '$test_base_url/app_all_list_data_v0';
 
 const String getDataByHash_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_fetch_data_hash_v0';
+    '$test_base_url/app_fetch_data_hash_v0';
 const String testList_URL =
     'http://35.244.50.14/index.php/app_fetch_test_list_v0';
 const String appCheckVersion_URL =
-    'https://mobile1.mycareerlift.com/index.php/App_check_version_v0';
+    '$test_base_url/App_check_version_v0';
 const String appFetchVersionCodeURL =
-    'https://mobile1.mycareerlift.com/index.php/app_fetch_version_code_v0';
+    '$test_base_url/app_fetch_version_code_v0';
 const String appFetchReading_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_fetch_reading_v1';
+    '$test_base_url/app_fetch_reading_v1';
 const String getTestQuestions_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_fetch_test_questions_v0';
+    '$test_base_url/app_fetch_test_questions_v0';
 const String postTestResultDetails_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_result_submit_v0';
+    '$test_base_url/app_result_submit_v0';
 const String fetchResult_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_fetch_result_v0';
+    '$test_base_url/app_fetch_result_v0';
 const String getFLTExamList_URL =
-    'https://mobile1.mycareerlift.com/index.php/get_flt_exam';
+    '$test_base_url/get_flt_exam';
 const String getFLTTestData_URL =
-    'https://mobile1.mycareerlift.com/index.php/get_flt_list_v1';
+    '$test_base_url/get_flt_list_v1';
 const String getFLTSectionList_URL =
-    'https://mobile1.mycareerlift.com/index.php/get_flt_section_list';
+    '$test_base_url/get_flt_section_list';
 const String getSectionQuesList_URL =
-    'https://mobile1.mycareerlift.com/index.php/get_flt_question_list';
+    '$test_base_url/get_flt_question_list';
 const String submitFLTTest_URL =
-    'https://mobile1.mycareerlift.com/index.php/submit_flt_result';
+    '$test_base_url/submit_flt_result';
 const String fetchFLTResult_URL =
-    'https://mobile1.mycareerlift.com/index.php/fetch_flt_result';
+    '$test_base_url/fetch_flt_result';
 const String fetchPastLiveClasses_URL =
-    'https://mobile1.mycareerlift.com/index.php/App_get_liveclass_detail/past_classes';
+    '$test_base_url/App_get_liveclass_detail/past_classes';
 const String fetchUpcomingLiveClasses_URL =
-    'https://mobile1.mycareerlift.com/index.php/App_get_liveclass_detail_v1';
+    '$test_base_url/App_get_liveclass_detail_v1';
 const String fetchAboutUsContent_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_fetch_inst_details_v0';
+    '$test_base_url/app_fetch_inst_details_v0';
 const String fetchInstPostType_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_fetch_inst_post_v0';
+    '$test_base_url/app_fetch_inst_post_v0';
 const String addNewPost_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_edu_add_post_v0';
+    '$test_base_url/app_edu_add_post_v0';
 const String getPaymentHistory_URL =
-    'http://mobile1.mycareerlift.com/index.php/app_get_payment_history';
+    '$test_base_url/app_get_payment_history';
 const String appCheckEmail_URL =
-    'http://mobile1.mycareerlift.com/index.php/app_check_email_v0';
+    '$test_base_url/app_check_email_v0';
 const String getBatchDetail_URL =
-    'https://mobile1.mycareerlift.com/index.php/app_fetch_batch_name_v0';
+    '$test_base_url/app_fetch_batch_name_v0';
 const String submitPayment_URL =
-    'http://mobile1.mycareerlift.com/index.php/app_success_payment_info';
+    '$test_base_url/app_success_payment_info';
 const String getPaymentDetail_URL =
-    'http://mobile1.mycareerlift.com/index.php/app_get_payment_detail';
+    '$test_base_url/app_get_payment_detail';
 
 ScaffoldFeatureController<SnackBar, SnackBarClosedReason> showCustomSnackBar(
     BuildContext context, String text) {

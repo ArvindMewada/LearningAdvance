@@ -4,6 +4,7 @@ import 'package:elearning/Screens/UpdateAndExpiry/AppUpdateAndExpiryScreen.dart'
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -103,7 +104,6 @@ getAppConfigMain(Store store1, BuildContext context) async {
             (route) => false);
       }
     }
-
     store.dataStore.runInTransaction(TxMode.write, () {
       List<ExamElement> dataNew = List.from(data['exams'])
           .map((element) => ExamElement(
@@ -124,7 +124,6 @@ getAppConfigMain(Store store1, BuildContext context) async {
 getTestReadingElementList(Store store1) async {
   final box = store1.box<TestReadingElement>();
   MyStore store = VxState.store;
-
   await http.post(Uri.parse(appFetchReading_URL), body: {
     'user_id': store.studentID,
     'user_hash': store.studentHash,
@@ -136,7 +135,6 @@ getTestReadingElementList(Store store1) async {
   }).then((value) async {
     dynamic data = await compute(jsonDecode, value.body);
     print(data);
-
     store.dataStore.runInTransaction(TxMode.write, () {
       List<TestReadingElement> dataNew = List.from(data['reading_arr'])
           .map((element) => TestReadingElement(
@@ -158,10 +156,9 @@ getTestReadingElementList(Store store1) async {
   });
 }
 
-
- askFieldPermissionAccess(BuildContext context, MyStore store1) async {
-  print("app_id': $appID,user_id': ${store1.studentID}, user_hash': $app_hash ");
-  SharedPreferences preferences = await SharedPreferences.getInstance() ;
+askFieldPermissionAccess(BuildContext context, MyStore store1) async {
+  loadingDialogOpen();
+  SharedPreferences preferences = await SharedPreferences.getInstance();
   await http.post(Uri.parse(appUserPermissionAccessURL), body: {
     'app_id': appID,
     'user_id': store1.studentID,
@@ -171,12 +168,32 @@ getTestReadingElementList(Store store1) async {
     print(data);
     Map<dynamic, dynamic> mapTemp = Map();
     mapTemp.addAll(data);
-    mapTemp.forEach((key, valueFlag){
-      preferences.clear();
+    mapTemp.forEach((key, valueFlag) {
       preferences.setInt("app_user_permission_access_v0_flag", valueFlag);
     });
-    // print(data);
+    SVProgressHUD.dismiss();
   });
+}
+
+resetApiCall() async {
+  MyStore store = VxState.store;
+  loadingDialogOpen();
+  await http.post(Uri.parse(appResetUserURL), body: {
+    'user_id': store.studentID,
+    'user_hash': store.studentHash,
+    'app_id': appID,
+  }).then((value) async {
+    dynamic data = await compute(jsonDecode, value.body);
+    print(data);
+    SVProgressHUD.dismiss();
+  });
+}
+
+void loadingDialogOpen() {
+  SVProgressHUD.setRingThickness(5);
+  SVProgressHUD.setRingRadius(5);
+  SVProgressHUD.setDefaultMaskType(SVProgressHUDMaskType.black);
+  SVProgressHUD.show();
 }
 
 void removeAllCache() async {
@@ -191,5 +208,5 @@ void removeAllCache() async {
   store.dataStore.box<FLTExamElement>().removeAll();
   store.dataStore.box<GroupElement>().removeAll();
   store.dataStore.box<BookmarkElement>().removeAll();
-  DefaultCacheManager().emptyCache();
+
 }

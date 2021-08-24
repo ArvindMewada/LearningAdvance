@@ -10,6 +10,7 @@ import 'package:elearning/constants.dart';
 import 'package:elearning/functions/googleSignInApi.dart';
 import 'package:elearning/schemas/studentDataSchema.dart';
 import 'package:elearning/schemas/studentPermissionSchema.dart';
+import 'package:elearning/utils/LoadAndDownload.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -92,12 +93,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     } else if (passwordController.text.isEmptyOrNull)
                       showCustomSnackBar(context, 'Please enter your password');
                     else {
-                      SVProgressHUD.setRingThickness(5);
-                      SVProgressHUD.setRingRadius(5);
-                      SVProgressHUD.setDefaultMaskType(
-                          SVProgressHUDMaskType.black);
-                      SVProgressHUD.show();
-
+                      loadingDialogOpen();
                       //Checks the user id and password from the server
                       await http.post(Uri.parse(studentDetailsAPI_URL), body: {
                         'app_id': appID,

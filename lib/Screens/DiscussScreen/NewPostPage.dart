@@ -4,12 +4,14 @@ import 'dart:io';
 import 'package:elearning/MyStore.dart';
 import 'package:elearning/Screens/DiscussScreen/NewPostTextContainer.dart';
 import 'package:elearning/constants.dart';
+import 'package:elearning/utils/LoadAndDownload.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:http/http.dart' as http;
 import 'package:image_picker/image_picker.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 class NewPostPage extends StatefulWidget {
@@ -48,6 +50,29 @@ class _NewPostPageState extends State<NewPostPage> {
     super.dispose();
   }
 
+  void getPermissionRequest(ImageSource imageSource) async {
+    var status = await Permission.camera.status;
+    if (imageSource == ImageSource.camera) {
+      if (status.isGranted) {
+        return getImageFiles(imageSource);
+      }
+    }
+  }
+
+  void getImageFiles(ImageSource imageSource) async {
+    PickedFile? pickedFile = await ImagePicker().getImage(
+      source: imageSource,
+      maxWidth: 1800,
+      maxHeight: 1800,
+    );
+    if (pickedFile != null) {
+      setState(() {
+        _image = File(pickedFile.path);
+      });
+    }
+    Navigator.pop(context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -64,10 +89,7 @@ class _NewPostPageState extends State<NewPostPage> {
               showCustomSnackBar(
                   context, 'Please enter the description for post');
             else {
-              SVProgressHUD.setRingThickness(5);
-              SVProgressHUD.setRingRadius(5);
-              SVProgressHUD.setDefaultMaskType(SVProgressHUDMaskType.black);
-              SVProgressHUD.show();
+              loadingDialogOpen();
               String base64Image = '';
               if (_image != null) {
                 File compressedFile = await FlutterNativeImage.compressImage(
@@ -109,6 +131,7 @@ class _NewPostPageState extends State<NewPostPage> {
                   dynamic data = await compute(jsonDecode, value.body);
                   print(data['flag']);
                   if (data['flag'] == 1) {
+                    Navigator.pop(context);
                     Navigator.pop(context);
                     showCustomSnackBar(context,
                         'Posted Successfully and is in the review period.');
@@ -277,22 +300,9 @@ class _NewPostPageState extends State<NewPostPage> {
                                                         Text('Gallery')
                                                       ],
                                                     ),
-                                                    onPressed: () async {
-                                                      PickedFile? pickedFile =
-                                                          await ImagePicker()
-                                                              .getImage(
-                                                        source:
-                                                            ImageSource.gallery,
-                                                        maxWidth: 1800,
-                                                        maxHeight: 1800,
-                                                      );
-                                                      if (pickedFile != null) {
-                                                        setState(() {
-                                                          _image = File(
-                                                              pickedFile.path);
-                                                        });
-                                                      }
-                                                      Navigator.pop(context);
+                                                    onPressed: () {
+                                                      getImageFiles(
+                                                          ImageSource.gallery);
                                                     },
                                                   ),
                                                 ),
@@ -307,22 +317,9 @@ class _NewPostPageState extends State<NewPostPage> {
                                                         Text('Camera')
                                                       ],
                                                     ),
-                                                    onPressed: () async {
-                                                      PickedFile? pickedFile =
-                                                          await ImagePicker()
-                                                              .getImage(
-                                                        source:
-                                                            ImageSource.camera,
-                                                        maxWidth: 1800,
-                                                        maxHeight: 1800,
-                                                      );
-                                                      if (pickedFile != null) {
-                                                        setState(() {
-                                                          _image = File(
-                                                              pickedFile.path);
-                                                        });
-                                                      }
-                                                      Navigator.pop(context);
+                                                    onPressed: () {
+                                                      getPermissionRequest(
+                                                          ImageSource.camera);
                                                     },
                                                   ),
                                                 ),

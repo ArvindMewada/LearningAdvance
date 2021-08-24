@@ -7,7 +7,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:velocity_x/velocity_x.dart';
 
 import '../../MyStore.dart';
-import '../../dbModel.dart';
 
 class SettingScreen extends StatefulWidget {
   const SettingScreen({
@@ -26,9 +25,7 @@ class _SettingScreenState extends State<SettingScreen> {
     // TODO: implement initState
     super.initState();
     animateButton();
-
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +45,8 @@ class _SettingScreenState extends State<SettingScreen> {
                       Text(
                         "Downloading App Data",
                         style: TextStyle(
-                            color: Colors.grey[700], fontWeight: FontWeight.bold),
+                            color: Colors.grey[700],
+                            fontWeight: FontWeight.bold),
                       ),
                       SizedBox(
                         height: 20,
@@ -61,14 +59,14 @@ class _SettingScreenState extends State<SettingScreen> {
                           Container(
                             width: 80,
                             decoration: BoxDecoration(
-                                borderRadius: BorderRadius.all(Radius.circular(50))),
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(50))),
                             height: 35.0,
                             child: MaterialButton(
                               child: setUpButtonChild(),
                               onPressed: () {
                                 setState(() {
-                                  if(!_isLoading)
-                                  animateButton();
+                                  if (!_isLoading) animateButton();
                                 });
                               },
                               elevation: 4.0,
@@ -90,17 +88,16 @@ class _SettingScreenState extends State<SettingScreen> {
                 Container(
                   margin: EdgeInsets.symmetric(horizontal: 100),
                   child: FlatButton(
-                    onPressed:() => Navigator.pop(context),
-                    child: Text('Continue', style: TextStyle(
-                        color: Colors.blue
-                    )
-                    ),
+                    onPressed: () => Navigator.pop(context),
+                    child:
+                        Text('Continue', style: TextStyle(color: Colors.blue)),
                     textColor: Colors.white,
-                    shape: RoundedRectangleBorder(side: BorderSide(
-                        color: Colors.blue,
-                        width: 1,
-                        style: BorderStyle.solid
-                    ), borderRadius: BorderRadius.circular(4)),
+                    shape: RoundedRectangleBorder(
+                        side: BorderSide(
+                            color: Colors.blue,
+                            width: 1,
+                            style: BorderStyle.solid),
+                        borderRadius: BorderRadius.circular(4)),
                   ),
                 ),
                 SizedBox(
@@ -115,29 +112,21 @@ class _SettingScreenState extends State<SettingScreen> {
                     child: MaterialButton(
                       child: Text(
                         "CLEAR DATA & AGAIN",
-                        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            color: Colors.white, fontWeight: FontWeight.bold),
                       ),
                       onPressed: () {
-                        Navigator.pop(context);
-                        DefaultCacheManager().emptyCache();
-                        _deleteCacheDir();
+                        resetApiCall();
                       },
                       elevation: 4.0,
                       minWidth: double.minPositive,
                       height: 35,
-                      color:  Colors.blueAccent,
+                      color: Colors.blueAccent,
                     ),
                   ),
                 )
               ],
             )));
-  }
-
-  Future<void> _deleteCacheDir() async {
-    final cacheDir = await getTemporaryDirectory();
-    if (cacheDir.existsSync()) {
-      cacheDir.deleteSync(recursive: true);
-    }
   }
 
 
@@ -157,20 +146,20 @@ class _SettingScreenState extends State<SettingScreen> {
   }
 
   void animateButton() {
+    final MyStore store = VxState.store;
+    getTestListContent(store.dataStore);
+    getAppConfigMain(store.dataStore, context);
+    getTestReadingElementList(store.dataStore);
     setState(() {
       if (!_isLoading) {
         _isLoading = true;
       }
     });
 
-    Timer(Duration(milliseconds: 3300), () {
+    Timer(Duration(seconds: 5), () {
       setState(() {
         if (_isLoading) {
           _isLoading = false;
-          final MyStore store = VxState.store;
-         getTestListContent(store.dataStore);
-         getAppConfigMain(store.dataStore, context);
-         getTestReadingElementList(store.dataStore);
         }
       });
     });

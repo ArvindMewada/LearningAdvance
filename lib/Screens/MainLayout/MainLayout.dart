@@ -5,9 +5,12 @@ import 'package:elearning/Screens/HomeScreen/home_screen_body.dart';
 import 'package:elearning/constants.dart';
 import 'package:elearning/dbModel.dart';
 import 'package:elearning/objectbox.g.dart';
+import 'package:elearning/schemas/studentDataSchema.dart';
+import 'package:elearning/schemas/studentPermissionSchema.dart';
 import 'package:elearning/utils/LoadAndDownload.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
@@ -89,11 +92,42 @@ class _MainLayoutState extends State<MainLayout> {
     removeAllCache();
   }
 
-
+void configurationAgain() async {
+  //Gets the permission of the user in the app
+  await http.post(Uri.parse(studentPermissionAPI_URL),
+      body: {
+        'app_hash': app_hash,
+        'user_hash': store.studentData.userHash,
+        'user_id': store.studentData.userId.toString()
+      }).then((userPermission) async {
+    if (userPermission.statusCode != 200) {
+      SVProgressHUD.dismiss();
+      showCustomSnackBar(
+          context, 'Error connecting to server');
+    } else {
+      dynamic data = await compute(
+          jsonDecode, userPermission.body);
+      if (data['flag'] != 1) {
+        SVProgressHUD.dismiss();
+        showCustomSnackBar(context,
+            'User not granted permission to use this application');
+      } else {
+        store.studentPermission =
+            StudentPermission.fromJson(data);
+        print("${store.studentPermission} student permission in main layout");
+        SharedPreferences prefs =
+        await SharedPreferences.getInstance();
+        prefs.setBool('isAuth', true);
+        SVProgressHUD.dismiss();
+      }
+    }
+  });
+}
 
   @override
   void initState() {
     initialisePrefs();
+
     store.studentPermission.studentPermissions!.forEach((element) {
       switch (element) {
         case '230':

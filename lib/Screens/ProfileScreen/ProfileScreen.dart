@@ -7,6 +7,7 @@ import 'package:elearning/Screens/Welcome/welcome_screen.dart';
 import 'package:elearning/constants.dart';
 import 'package:elearning/dbModel.dart';
 import 'package:elearning/functions/googleSignInApi.dart';
+import 'package:elearning/utils/LoadAndDownload.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
@@ -172,11 +173,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               title: 'Logout',
                               content: 'Do you want to Logout?',
                               press: () async {
-                                SVProgressHUD.setRingThickness(5);
-                                SVProgressHUD.setRingRadius(5);
-                                SVProgressHUD.setDefaultMaskType(
-                                    SVProgressHUDMaskType.black);
-                                SVProgressHUD.show();
+                                loadingDialogOpen();
                                 Timer(Duration(seconds: 2), () async {
                                   SharedPreferences prefs =
                                       await SharedPreferences.getInstance();
@@ -185,28 +182,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   else if (prefs.getString('loginType') == 'fb')
                                     await FacebookAuth.instance.logOut();
                                   else
-                                    prefs.clear();
-                                  prefs.setBool('hasSeenCards', true);
-                                  store.dataStore.box<Post>().removeAll();
-                                  store.dataStore
-                                      .box<TestDataElement>()
-                                      .removeAll();
-                                  store.dataStore
-                                      .box<ExamElement>()
-                                      .removeAll();
-                                  store.dataStore
-                                      .box<TestReadingElement>()
-                                      .removeAll();
-                                  store.dataStore
-                                      .box<FLTExamElement>()
-                                      .removeAll();
-                                  store.dataStore
-                                      .box<GroupElement>()
-                                      .removeAll();
-                                  store.dataStore
-                                      .box<BookmarkElement>()
-                                      .removeAll();
-                                  DefaultCacheManager().emptyCache();
+                                    removeAllCache();
                                   SVProgressHUD.dismiss();
                                   Navigator.pushAndRemoveUntil(
                                       context,
