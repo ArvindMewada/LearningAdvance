@@ -5,15 +5,10 @@ import 'package:elearning/Screens/HomeScreen/home_screen_body.dart';
 import 'package:elearning/constants.dart';
 import 'package:elearning/dbModel.dart';
 import 'package:elearning/objectbox.g.dart';
-import 'package:elearning/schemas/studentDataSchema.dart';
-import 'package:elearning/schemas/studentPermissionSchema.dart';
 import 'package:elearning/utils/LoadAndDownload.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
-import 'package:fluttertoast/fluttertoast.dart';
 import 'package:http/http.dart' as http;
-import 'package:path_provider/path_provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
 
