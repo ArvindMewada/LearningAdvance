@@ -7,6 +7,7 @@ class ClientData {
   ClientData.fromJson(Map<String, dynamic> json) {
     if (json['home_elements'] != null) {
       homeElements = new List.empty(growable: true);
+      homeElements!.clear();
       json['home_elements'].forEach((v) {
         homeElements!.add(new HomeElements.fromJson(v));
       });
@@ -16,6 +17,7 @@ class ClientData {
 
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
+    data.clear();
     if (this.homeElements != null) {
       data['home_elements'] =
           this.homeElements!.map((v) => v.toJson()).toList();

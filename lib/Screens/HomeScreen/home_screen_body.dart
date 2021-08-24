@@ -61,7 +61,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
         String elementOld = jsonEncode(element);
         if (tempDataCheck.contains(elementOld)) {
           print(elementOld);
-
           tempDataCheck.removeWhere((elementNew) => elementNew == elementOld);
         }
       });
@@ -178,7 +177,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   @override
   void dispose() {
     super.dispose();
-    prefs.clear();
   }
 
   @override

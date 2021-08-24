@@ -2,19 +2,16 @@ import 'dart:async';
 
 import 'package:elearning/MyStore.dart';
 import 'package:elearning/Screens/MainLayout/AlertDialog.dart';
-import 'package:elearning/Screens/ProfileScreen/StudentDashboard.dart';
 import 'package:elearning/Screens/Welcome/welcome_screen.dart';
 import 'package:elearning/constants.dart';
-import 'package:elearning/dbModel.dart';
 import 'package:elearning/functions/googleSignInApi.dart';
 import 'package:elearning/utils/LoadAndDownload.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_cache_manager/flutter_cache_manager.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
+import 'package:percent_indicator/percent_indicator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:velocity_x/velocity_x.dart';
-import 'package:percent_indicator/percent_indicator.dart';
 
 class ProfileScreen extends StatefulWidget {
   @override

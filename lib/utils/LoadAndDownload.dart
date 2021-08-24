@@ -208,5 +208,4 @@ void removeAllCache() async {
   store.dataStore.box<FLTExamElement>().removeAll();
   store.dataStore.box<GroupElement>().removeAll();
   store.dataStore.box<BookmarkElement>().removeAll();
-
 }
