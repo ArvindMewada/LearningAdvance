@@ -217,7 +217,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
 
   @override
   Widget build(BuildContext context) {
-    getAppConfig();
     void _onReorder(int oldIndex, int newIndex) {
       setState(() {
         IconData row = _tiles.removeAt(oldIndex);
