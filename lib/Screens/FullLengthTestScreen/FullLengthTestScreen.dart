@@ -20,10 +20,10 @@ class FullLengthTestScreen extends StatefulWidget {
 class _FullLengthTestScreenState extends State<FullLengthTestScreen> {
   late BehaviorSubject<List<FLTExamElement>> _stream;
   MyStore store = VxState.store;
-  late SharedPreferences _sharedPreferences;
+  
   late bool isHindi = false;
   @override
-  void initState() async {
+  void initState()  {
     if (mounted)
       setState(() {
         _stream = BehaviorSubject();
@@ -32,15 +32,19 @@ class _FullLengthTestScreenState extends State<FullLengthTestScreen> {
             .query()
             .watch(triggerImmediately: true)
             .map((query) => query.find()));
+
       });
-    _sharedPreferences = await SharedPreferences.getInstance();
     super.initState();
   }
 
+  bool isPermission = true;
   void isAccessAllow () async {
-    final isPermission = _sharedPreferences.getString("access_allow");
-    if(isPermission != null && isPermission == "Yes") {
-      print("hey cong");
+    SharedPreferences sharedPreferences  = await SharedPreferences.getInstance();
+    var permission = sharedPreferences.getString("access_allow");
+    if(permission != null && permission == "Yes") {
+      setState(() {
+        isPermission = false;
+      });
     }
   }
   @override
@@ -50,7 +54,7 @@ class _FullLengthTestScreenState extends State<FullLengthTestScreen> {
       appBar: AppBar(
         title: Text('Full Length Test'),
       ),
-      body: StreamBuilder(
+      body: isPermission ? StreamBuilder(
         stream: _stream,
         builder: (context, AsyncSnapshot<List<FLTExamElement>> snapshot) {
           if (snapshot.hasData &&
@@ -107,7 +111,7 @@ class _FullLengthTestScreenState extends State<FullLengthTestScreen> {
 
           return (Center(child: CircularProgressIndicator()));
         },
-      ),
+      ) : Container(),
     );
   }
 }

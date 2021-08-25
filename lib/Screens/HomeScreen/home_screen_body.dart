@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'dart:convert';
 
 import 'package:elearning/MyStore.dart';
@@ -46,42 +45,39 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<HomeElements> finalLisr = [];
 
-
   getAppConfig() async {
     prefs = await SharedPreferences.getInstance();
-    Timer(Duration(seconds: 2), () async {
-      await http.post(Uri.parse(clientAPI_URL), body: {
-        'version_code': version_code,
-        'app_hash': app_hash
-      }).then((clientData) async {
-        if (clientData.statusCode != 200)
-          showCustomSnackBar(
-              context, 'Error Connecting to Server. Please try again later.');
-        else {
-          dynamic data = await compute(jsonDecode, clientData.body);
-          store.clientData = ClientData.fromJson(data);
-          if (data['home_elements'] != null) {
-            finalLisr = new List.empty(growable: true);
-            finalLisr.clear();
-            data['home_elements'].forEach((v) {
-              finalLisr.add(new HomeElements.fromJson(v));
-            });
-            if (prefs.containsKey('homelist')) {
-              prefs.getStringList("homelist")!.clear();
-            }
-            prefs.setStringList(
-                'homelist', finalLisr.map((e) => jsonEncode(e)).toList());
+    await http.post(Uri.parse(clientAPI_URL), body: {
+      'version_code': version_code,
+      'app_hash': app_hash
+    }).then((clientData) async {
+      if (clientData.statusCode != 200)
+        showCustomSnackBar(
+            context, 'Error Connecting to Server. Please try again later.');
+      else {
+        dynamic data = await compute(jsonDecode, clientData.body);
+        store.clientData = ClientData.fromJson(data);
+        if (data['home_elements'] != null) {
+          finalLisr = new List.empty(growable: true);
+          finalLisr.clear();
+          data['home_elements'].forEach((v) {
+            finalLisr.add(new HomeElements.fromJson(v));
+          });
+          if (prefs.containsKey('homelist')) {
+            prefs.getStringList("homelist")!.clear();
           }
-          if (store.clientData.flag != 1)
-            showCustomSnackBar(context, 'Invalid Application Package');
-          else {
-            store.clientData.homeElements!.forEach((element) {
-              store.clientPermissionList.add(element.homeElementId);
-            });
-            initialise();
-          }
+          prefs.setStringList(
+              'homelist', finalLisr.map((e) => jsonEncode(e)).toList());
         }
-      });
+        if (store.clientData.flag != 1)
+          showCustomSnackBar(context, 'Invalid Application Package');
+        else {
+          store.clientData.homeElements!.forEach((element) {
+            store.clientPermissionList.add(element.homeElementId);
+          });
+          initialise();
+        }
+      }
     });
   }
 
@@ -209,7 +205,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
     _tiles = [];
     WidgetsBinding.instance!.addPostFrameCallback((_) => {
           getAppConfig(),
-            initialise(),
+          initialise(),
         });
     super.initState();
   }
@@ -218,8 +214,6 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   void dispose() {
     super.dispose();
   }
-
-
 
   @override
   Widget build(BuildContext context) {

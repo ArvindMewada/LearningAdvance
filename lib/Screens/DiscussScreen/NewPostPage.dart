@@ -1,12 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:flutter/material.dart';
+import 'package:camera/camera.dart';
 import 'package:elearning/MyStore.dart';
 import 'package:elearning/Screens/DiscussScreen/NewPostTextContainer.dart';
 import 'package:elearning/constants.dart';
 import 'package:elearning/utils/LoadAndDownloadNetworkCall.dart';
 import 'package:flutter/foundation.dart';
-import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';
 import 'package:http/http.dart' as http;
@@ -52,24 +53,28 @@ class _NewPostPageState extends State<NewPostPage> {
 
   void getPermissionRequest(ImageSource imageSource) async {
     var status = await Permission.camera.status;
-    if (imageSource == ImageSource.camera) {
-      if (status.isGranted) {
-        return getImageFiles(imageSource);
-      }
+    if (imageSource == ImageSource.camera &&
+        await Permission.camera.request().isGranted) {
+      getImageFiles(imageSource);
     }
   }
 
   void getImageFiles(ImageSource imageSource) async {
-    PickedFile? pickedFile = await ImagePicker().getImage(
-      source: imageSource,
-      maxWidth: 1800,
-      maxHeight: 1800,
-    );
-    if (pickedFile != null) {
-      setState(() {
-        _image = File(pickedFile.path);
-      });
+    try{
+      PickedFile? pickedFile = await ImagePicker().getImage(
+        source: imageSource,
+        maxWidth: 1000,
+        maxHeight: 1000,
+      );
+      if (pickedFile != null) {
+        setState(() {
+          _image = File(pickedFile.path);
+        });
+      }
+    }catch (r){
+      print(r);
     }
+
     Navigator.pop(context);
   }
 
@@ -129,7 +134,6 @@ class _NewPostPageState extends State<NewPostPage> {
                   showCustomSnackBar(context, 'Unable to post.');
                 } else {
                   dynamic data = await compute(jsonDecode, value.body);
-                  print(data['flag']);
                   if (data['flag'] == 1) {
                     Navigator.pop(context);
                     Navigator.pop(context);
