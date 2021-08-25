@@ -5,7 +5,7 @@ import 'package:elearning/Screens/MainLayout/AlertDialog.dart';
 import 'package:elearning/Screens/Welcome/welcome_screen.dart';
 import 'package:elearning/constants.dart';
 import 'package:elearning/functions/googleSignInApi.dart';
-import 'package:elearning/utils/LoadAndDownload.dart';
+import 'package:elearning/utils/LoadAndDownloadNetworkCall.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';
 import 'package:flutter_svprogresshud/flutter_svprogresshud.dart';

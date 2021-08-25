@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 
 import 'package:elearning/MyStore.dart';
@@ -21,18 +22,16 @@ import 'package:elearning/components/nothingToShow.dart';
 import 'package:elearning/constants.dart';
 import 'package:elearning/modules/CurrentAffairsPage.dart';
 import 'package:elearning/schemas/clientDataSchema.dart';
-import 'package:flutter/foundation.dart';
-import 'package:http/http.dart' as http;
 import 'package:elearning/utils/const.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 import 'package:percent_indicator/circular_percent_indicator.dart';
 import 'package:reorderables/reorderables.dart';
 import 'package:responsive_sizer/responsive_sizer.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:store_redirect/store_redirect.dart';
 import 'package:velocity_x/velocity_x.dart';
-
-import '../../objectbox.g.dart';
 
 class HomeScreenBody extends StatefulWidget {
   @override
@@ -45,6 +44,46 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   late SharedPreferences prefs;
   late bool isDone;
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
+  List<HomeElements> finalLisr = [];
+
+
+  getAppConfig() async {
+    prefs = await SharedPreferences.getInstance();
+    Timer(Duration(seconds: 2), () async {
+      await http.post(Uri.parse(clientAPI_URL), body: {
+        'version_code': version_code,
+        'app_hash': app_hash
+      }).then((clientData) async {
+        if (clientData.statusCode != 200)
+          showCustomSnackBar(
+              context, 'Error Connecting to Server. Please try again later.');
+        else {
+          dynamic data = await compute(jsonDecode, clientData.body);
+          store.clientData = ClientData.fromJson(data);
+          if (data['home_elements'] != null) {
+            finalLisr = new List.empty(growable: true);
+            finalLisr.clear();
+            data['home_elements'].forEach((v) {
+              finalLisr.add(new HomeElements.fromJson(v));
+            });
+            if (prefs.containsKey('homelist')) {
+              prefs.getStringList("homelist")!.clear();
+            }
+            prefs.setStringList(
+                'homelist', finalLisr.map((e) => jsonEncode(e)).toList());
+          }
+          if (store.clientData.flag != 1)
+            showCustomSnackBar(context, 'Invalid Application Package');
+          else {
+            store.clientData.homeElements!.forEach((element) {
+              store.clientPermissionList.add(element.homeElementId);
+            });
+            initialise();
+          }
+        }
+      });
+    });
+  }
 
   initialise() async {
     prefs = await SharedPreferences.getInstance();
@@ -54,31 +93,29 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
           prefs.getStringList('homelist')!.map((e) => jsonDecode(e)).toList();
       List<HomeElements> tempData =
           data.map((e) => HomeElements.fromJson(e)).toList();
-
       List<HomeElements> tempDataNew = store.clientData.homeElements!;
       List tempDataCheck = tempDataNew.map((e) => jsonEncode(e)).toList();
-      tempData.forEach((element) {
-        String elementOld = jsonEncode(element);
-        if (tempDataCheck.contains(elementOld)) {
-          print(elementOld);
-          tempDataCheck.removeWhere((elementNew) => elementNew == elementOld);
-        }
-      });
       if (tempDataCheck.length != 0) {
+        tempData.clear();
         tempData += tempDataCheck
             .map((e) => HomeElements.fromJson(jsonDecode(e)))
             .toList();
+        if (prefs.containsKey('homelist')) {
+          prefs.getStringList("homelist")!.clear();
+        }
         prefs.setStringList(
             'homelist', tempData.map((e) => jsonEncode(e)).toList());
       }
+
       getCards(tempData, permissions);
     } else {
-      print('else');
-      List<HomeElements> tempData = store.clientData.homeElements!;
-      print(tempData);
-      getCards(tempData, permissions);
+      List<HomeElements> tempdata = store.clientData.homeElements!;
+      getCards(tempdata, permissions);
+      if (prefs.containsKey('homelist')) {
+        prefs.getStringList("homelist")!.clear();
+      }
       prefs.setStringList(
-          'homelist', tempData.map((e) => jsonEncode(e)).toList());
+          'homelist', tempdata.map((e) => jsonEncode(e)).toList());
     }
     setState(() {
       isDone = true;
@@ -86,7 +123,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
   }
 
   getFunction(String element) async {
-    return Navigator.push(context, MaterialPageRoute(builder: (context)  {
+    return Navigator.push(context, MaterialPageRoute(builder: (context) {
       switch (element) {
         case '230':
           return CommunityPage();
@@ -118,8 +155,8 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
     }));
   }
 
-
   getCards(List<HomeElements> tempData, List<String> permissions) {
+    _tiles.clear();
     tempData.forEach((element) {
       _tiles.add(IconData(
           color: (permissions.contains(element.homeElementId))
@@ -168,10 +205,13 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
 
   @override
   void initState() {
-    super.initState();
     isDone = false;
     _tiles = [];
-    initialise();
+    WidgetsBinding.instance!.addPostFrameCallback((_) => {
+          getAppConfig(),
+            initialise(),
+        });
+    super.initState();
   }
 
   @override
@@ -179,8 +219,11 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
     super.dispose();
   }
 
+
+
   @override
   Widget build(BuildContext context) {
+    getAppConfig();
     void _onReorder(int oldIndex, int newIndex) {
       setState(() {
         IconData row = _tiles.removeAt(oldIndex);
@@ -391,8 +434,7 @@ class _HomeScreenBodyState extends State<HomeScreenBody> {
                     shape: listTileShape,
                     onTap: () {
                       StoreRedirect.redirect(
-                          androidAppId:
-                              "com.example.elearning",
+                          androidAppId: "com.example.elearning",
                           iOSAppId: "284882215");
                     },
                     leading: Icon(Icons.rate_review),

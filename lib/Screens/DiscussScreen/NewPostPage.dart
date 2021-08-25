@@ -4,7 +4,7 @@ import 'dart:io';
 import 'package:elearning/MyStore.dart';
 import 'package:elearning/Screens/DiscussScreen/NewPostTextContainer.dart';
 import 'package:elearning/constants.dart';
-import 'package:elearning/utils/LoadAndDownload.dart';
+import 'package:elearning/utils/LoadAndDownloadNetworkCall.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_native_image/flutter_native_image.dart';

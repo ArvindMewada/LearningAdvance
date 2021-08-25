@@ -10,7 +10,7 @@ import 'package:elearning/constants.dart';
 import 'package:elearning/functions/googleSignInApi.dart';
 import 'package:elearning/schemas/studentDataSchema.dart';
 import 'package:elearning/schemas/studentPermissionSchema.dart';
-import 'package:elearning/utils/LoadAndDownload.dart';
+import 'package:elearning/utils/LoadAndDownloadNetworkCall.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_facebook_auth/flutter_facebook_auth.dart';

@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:elearning/Screens/UpdateAndExpiry/AppUpdateAndExpiryScreen.dart';
+import 'package:elearning/schemas/clientDataSchema.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_cache_manager/flutter_cache_manager.dart';
@@ -68,12 +69,14 @@ getAppConfigMain(Store store1, BuildContext context) async {
   }).then((value) async {
     dynamic data = await compute(jsonDecode, value.body);
     print(data);
+
     var forceUpdate = data['force_update'];
     var appUpdate = data['app_update'];
     var allowAccess = data['access_allow'];
     if (allowAccess == "No") {
       preferences.setString("access_allow", "false");
     }
+    store.clientData = ClientData.fromJson(data);
     var expiryDate = data['date_app_expiry'];
     if (forceUpdate != null && forceUpdate == 0) {
       // response 1 -> disable update
@@ -186,8 +189,45 @@ resetApiCall() async {
     dynamic data = await compute(jsonDecode, value.body);
     print(data);
     SVProgressHUD.dismiss();
+
   });
+
 }
+
+// initialise() async {
+//  SharedPreferences prefs = await SharedPreferences.getInstance();
+//  MyStore store = VxState.store;
+//   if (prefs.containsKey('homelist')) {
+//     List data =
+//     prefs.getStringList('homelist')!.map((e) => jsonDecode(e)).toList();
+//     List<HomeElements> tempData =
+//     data.map((e) => HomeElements.fromJson(e)).toList();
+//     List<HomeElements> tempDataNew = [];
+//     tempDataNew = store.clientData.homeElements!;
+//     List tempDataCheck = [];
+//     tempDataCheck = tempDataNew.map((e) => jsonEncode(e)).toList();
+//     tempData.forEach((element) {
+//       String elementOld = jsonEncode(element);
+//       if (tempDataCheck.contains(elementOld)) {
+//         print(elementOld);
+//         tempDataCheck.removeWhere((elementNew) => elementNew == elementOld);
+//       }
+//     });
+//     if (tempDataCheck.length != 0) {
+//       tempData += tempDataCheck
+//           .map((e) => HomeElements.fromJson(jsonDecode(e)))
+//           .toList();
+//       prefs.setStringList(
+//           'homelist', tempData.map((e) => jsonEncode(e)).toList());
+//     }
+//   } else {
+//     List<HomeElements> tempData = [];
+//     tempData = store.clientData.homeElements!;
+//     print(tempData);
+//     prefs.setStringList(
+//         'homelist', tempData.map((e) => jsonEncode(e)).toList());
+//   }
+// }
 
 void loadingDialogOpen() {
   SVProgressHUD.setRingThickness(5);

@@ -4,7 +4,7 @@ import 'package:elearning/MyStore.dart';
 import 'package:elearning/constants.dart';
 import 'package:elearning/schemas/instituteNotiSchema.dart';
 import 'package:elearning/utils/ConvertStringtoUnicode.dart';
-import 'package:elearning/utils/LoadAndDownload.dart';
+import 'package:elearning/utils/LoadAndDownloadNetworkCall.dart';
 import 'package:elearning/utils/LoadHTMLData.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';

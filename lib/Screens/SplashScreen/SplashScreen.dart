@@ -9,7 +9,7 @@ import 'package:elearning/constants.dart';
 import 'package:elearning/schemas/clientDataSchema.dart';
 import 'package:elearning/schemas/studentDataSchema.dart';
 import 'package:elearning/schemas/studentPermissionSchema.dart';
-import 'package:elearning/utils/LoadAndDownload.dart';
+import 'package:elearning/utils/LoadAndDownloadNetworkCall.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -49,8 +49,6 @@ class _SplashScreenState extends State<SplashScreen>
               store.clientPermissionList.add(element.homeElementId);
             });
             print(store.clientPermissionList);
-            debugPrint(store.clientData.homeElements.toString(),
-                wrapWidth: 1024);
             await initLogin(prefs);
           }
         }
@@ -61,62 +59,6 @@ class _SplashScreenState extends State<SplashScreen>
   initLogin(SharedPreferences prefs) async {
     //Check weather the user is already logged in or is logging for the first time
     if (prefs.getBool('isAuth') == true && prefs.getString('email') != null) {
-      // await http.post(Uri.parse(studentDetailsAPI_URL), body: {
-      //   'app_id': appID,
-      //   'hash': app_hash,
-      //   'email': prefs.getString('email'),
-      //   'pwd': prefs.getString('password'),
-      // }).then((userData) async {
-      //   if (userData.statusCode != 200) {
-      //     showCustomSnackBar(context, 'Error connecting to server');
-      //   } else if (userData.body
-      //           .contains('{message: No data exist for given user') ||
-      //       userData.body.contains(
-      //           '{message: Institute id did not matched with given app id,')) {
-      //     showCustomSnackBar(
-      //         context, 'Session Expired. Please Signup or Login again.');
-      //     prefs.setBool('isAuth', false);
-      //     Navigator.pushReplacement(context,
-      //         MaterialPageRoute(builder: (context) => WelcomeScreen()));
-      //   } else {
-      //     dynamic data = await compute(jsonDecode, userData.body);
-      //     if (data['flag'] != 1) {
-      //       showCustomSnackBar(
-      //           context, 'Session Expired. Please Signup or Login again.');
-      //       prefs.setBool('isAuth', false);
-      //       Navigator.pushReplacement(context,
-      //           MaterialPageRoute(builder: (context) => WelcomeScreen()));
-      //     } else {
-      //       store.studentData = StudentData.fromJson(data);
-      //       print(store.studentData);
-      //       store.studentID = store.studentData.userId!;
-      //       store.studentHash = store.studentData.userHash!;
-      //       await http.post(Uri.parse(studentPermissionAPI_URL), body: {
-      //         'app_hash': app_hash,
-      //         'user_hash': store.studentData.userHash,
-      //         'user_id': store.studentData.userId
-      //       }).then((userPermission) async {
-      //         if (userPermission.statusCode != 200)
-      //           showCustomSnackBar(context,
-      //               'Error connecting to server. Please try again later');
-      //         else {
-      //           dynamic data = await compute(jsonDecode, userPermission.body);
-      //           if (data['flag'] != 1) {
-      //             showCustomSnackBar(context,
-      //                 'User not granted permission to use this application');
-      //             Navigator.pushReplacement(context,
-      //                 MaterialPageRoute(builder: (context) => WelcomeScreen()));
-      //           } else {
-      //             store.studentPermission = StudentPermission.fromJson(data);
-      //
-      //             Navigator.pushReplacement(context,
-      //                 MaterialPageRoute(builder: (context) => MainLayout()));
-      //           }
-      //         }
-      //       });
-      //     }
-      //   }
-      // });
       print(prefs.getString('email'));
       await http.post(Uri.parse(appCheckEmail_URL), body: {
         'hash': app_hash,
