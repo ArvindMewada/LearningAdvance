@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="app_name">SpeEdLabs</string>
+  <string name="facebook_app_id">2994184150905402</string>
+  <string name="fb_login_protocol_scheme">fb2994184150905402</string>
+</resources>
